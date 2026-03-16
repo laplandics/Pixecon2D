@@ -1,30 +1,30 @@
-﻿using System;
-using System.Collections;
+﻿using R3;
 using UnityEngine;
 
-public class MenuBoot : MonoBehaviour
+namespace Menu
 {
-    public Action GoToGameScene;
-    private MenuUI _menuUI;
-    
-    public IEnumerator Boot()
+    public class MenuBoot : MonoBehaviour
     {
-        Utils.Cam.Instantiate();
-        Utils.UI.New(Utils.UI.MENU_UI);
-        Utils.UI.AttachSceneUI(out _menuUI);
-        AssignToUiEvents();
-        yield return null;
-    }
+        private MenuUI _menuUI;
+        
+        public Observable<MenuExitState> Boot(MenuEntryState entryState)
+        {
+            Utils.Cam.Instantiate();
+            Utils.UI.New(Utils.UI.MENU_UI);
+            Utils.UI.AttachSceneUI(out _menuUI);
+            return MenuSceneState();
+        }
 
-    private void AssignToUiEvents()
-    {
-        _menuUI.PlayButtonClicked += OnPlayButtonClicked;
-    }
+        private Observable<MenuExitState> MenuSceneState()
+        {
+            var playSignalSubject = new Subject<Unit>();
+            _menuUI.Bind(playSignalSubject);
 
-    private void OnPlayButtonClicked()
-    {
-        Utils.UI.RemoveSceneUI<MenuUI>();
-        Utils.UI.Clear();
-        GoToGameScene?.Invoke();
+            var gameEntryState = new Game.GameEntryState();
+            var exitState = new MenuExitState(gameEntryState);
+            var exitSignal = playSignalSubject.Select(_ => exitState);
+            exitSignal.Subscribe(_ => {Utils.UI.RemoveSceneUI<MenuUI>(); Utils.UI.Clear();});
+            return exitSignal;
+        }
     }
 }
