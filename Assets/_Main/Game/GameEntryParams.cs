@@ -1,6 +1,6 @@
 ﻿namespace Game
 {
-    public class GameEntryState
+    public class GameEntryParams
     {
         
     }

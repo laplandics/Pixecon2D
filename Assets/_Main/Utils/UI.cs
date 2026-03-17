@@ -1,20 +1,19 @@
 ﻿using UnityEngine;
 using UnityEngine.UIElements;
+using Object = UnityEngine.Object;
 
 namespace Utils
 {
-    
-    public static class UI
+    public class UI
     {
         public const string LOADING_SCREEN = "LoadingScreen";
         public const string MENU_UI = "MenuUI";
         public const string GAME_UI = "GameUI";
         
-        private static Ui _uiContainer;
+        private Ui _uiContainer;
         
-        public static void Init()
+        public UI()
         {
-            if (_uiContainer != null) Object.Destroy(_uiContainer);
             _uiContainer = new GameObject("[UI]").AddComponent<Ui>();
             Object.DontDestroyOnLoad(_uiContainer.gameObject);
             _uiContainer.uiDocument = _uiContainer.gameObject.AddComponent<UIDocument>();
@@ -22,7 +21,7 @@ namespace Utils
             _uiContainer.InitSettings(settings);
         }
 
-        public static void New(string uiAssetName, bool enable = true)
+        public void New(string uiAssetName, bool enable = true)
         {
             if (_uiContainer.uiDocument.rootVisualElement != null)
             { _uiContainer.ResetUi(); }
@@ -31,24 +30,24 @@ namespace Utils
             _uiContainer.uiDocument.enabled = enable;
         }
 
-        public static void AttachSceneUI<T>(out T ui) where T : MonoBehaviour, ISceneUI
+        public void AttachSceneUI<T>(out T ui) where T : MonoBehaviour, ISceneUI
         {
             ISceneUI sceneUi = _uiContainer.gameObject.AddComponent<T>();
             sceneUi.OnAttached();
             ui = (T)sceneUi;
         }
 
-        public static void RemoveSceneUI<T>() where T : MonoBehaviour, ISceneUI
+        public void RemoveSceneUI<T>() where T : MonoBehaviour, ISceneUI
         {
             if (!_uiContainer.gameObject.TryGetComponent(out T sceneUi)) return;
             sceneUi.OnRemoved();
             Object.Destroy(sceneUi);
         }
         
-        public static void Clear() { _uiContainer.ResetUi(); }
+        public void Clear() { _uiContainer.ResetUi(); }
         
-        public static void Enable() => _uiContainer.uiDocument.enabled = true;
-        public static void Disable() => _uiContainer.uiDocument.enabled = false;
+        public void Enable() => _uiContainer.uiDocument.enabled = true;
+        public void Disable() => _uiContainer.uiDocument.enabled = false;
         
         internal class Ui : MonoBehaviour
         {
