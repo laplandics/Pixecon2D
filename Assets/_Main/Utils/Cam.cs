@@ -1,10 +1,9 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace Utils
 {
-    public class Cam : IDisposable
+    public class Cam
     {
         private readonly string _camName;
         
@@ -19,11 +18,6 @@ namespace Utils
             cam.tag = "MainCamera";
             Get = cam;
             Resources.UnloadUnusedAssets();
-        }
-
-        public void Dispose()
-        {
-            Debug.Log("Cam disposed");
         }
         
         public Camera Get { get; private set; }

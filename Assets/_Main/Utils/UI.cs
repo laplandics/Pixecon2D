@@ -1,61 +1,48 @@
 ﻿using UnityEngine;
-using UnityEngine.UIElements;
 using Object = UnityEngine.Object;
 
 namespace Utils
 {
     public class UI
     {
-        public const string LOADING_SCREEN = "LoadingScreen";
-        public const string MENU_UI = "MenuUI";
-        public const string GAME_UI = "GameUI";
-        
-        private Ui _uiContainer;
+        private readonly Ui _uiContainer;
         
         public UI()
         {
-            _uiContainer = new GameObject("[UI]").AddComponent<Ui>();
-            Object.DontDestroyOnLoad(_uiContainer.gameObject);
-            _uiContainer.uiDocument = _uiContainer.gameObject.AddComponent<UIDocument>();
-            var settings = Resources.Load<PanelSettings>("UI/UISettings");
-            _uiContainer.InitSettings(settings);
+            var containerPrefab = Resources.Load<Ui>(Constant.Names.UI.UI_ROOT);
+            _uiContainer = Object.Instantiate(containerPrefab);
+            _uiContainer.name = "[UI]";
+            Object.DontDestroyOnLoad(_uiContainer);
+            Resources.UnloadUnusedAssets();
         }
 
-        public void New(string uiAssetName, bool enable = true)
+        public void AttachUI<T>(string path, out T attachedUI,
+            bool enable = true, int layer = 0, string key = "") where T : ISceneUI
         {
-            if (_uiContainer.uiDocument.rootVisualElement != null)
-            { _uiContainer.ResetUi(); }
-            var uiAsset = Resources.Load<VisualTreeAsset>($"UI/{uiAssetName}");
-            _uiContainer.SetUI(uiAsset);
-            _uiContainer.uiDocument.enabled = enable;
+            var newUIPrefab = Resources.Load<GameObject>(path);
+            var uiObj = Object.Instantiate(newUIPrefab);
+            var ui = uiObj.GetComponent<ISceneUI>();
+            var uiRect = ui.UITransform;
+            uiObj.name = $"{typeof(T).Name}{key}";
+            uiObj.gameObject.SetActive(enable);
+            uiRect.SetParent(_uiContainer.layers[layer], false);
+            ui.OnAttached();
+            Resources.UnloadUnusedAssets();
+            attachedUI = (T)ui;
         }
 
-        public void AttachSceneUI<T>(out T ui) where T : MonoBehaviour, ISceneUI
+        public void DetachUI<T>(string key = "") where T : ISceneUI
         {
-            ISceneUI sceneUi = _uiContainer.gameObject.AddComponent<T>();
-            sceneUi.OnAttached();
-            ui = (T)sceneUi;
-        }
-
-        public void RemoveSceneUI<T>() where T : MonoBehaviour, ISceneUI
-        {
-            if (!_uiContainer.gameObject.TryGetComponent(out T sceneUi)) return;
-            sceneUi.OnRemoved();
-            Object.Destroy(sceneUi);
+            foreach (var child in _uiContainer.GetComponentsInChildren<T>())
+            {
+                var childObj = child.UITransform.gameObject;
+                if (childObj.name != $"{typeof(T).Name}{key}") continue;
+                child.OnRemoved();
+                Object.Destroy(child.UITransform.gameObject);
+                break;
+            }
         }
         
         public void Clear() { _uiContainer.ResetUi(); }
-        
-        public void Enable() => _uiContainer.uiDocument.enabled = true;
-        public void Disable() => _uiContainer.uiDocument.enabled = false;
-        
-        internal class Ui : MonoBehaviour
-        {
-            public UIDocument uiDocument;
-            
-            public void InitSettings(PanelSettings settings) => uiDocument.panelSettings = settings;
-            public void SetUI(VisualTreeAsset uiAsset) { uiDocument.visualTreeAsset = uiAsset; }
-            public void ResetUi() { uiDocument.visualTreeAsset = null; }
-        }
     }
 }

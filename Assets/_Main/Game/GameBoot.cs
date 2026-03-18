@@ -11,6 +11,7 @@ namespace Game
         public Observable<GameExitParams> Boot(Core.DI gameDi, GameEntryParams entryParams)
         {
             SetEssentials(gameDi);
+            SetServices();
             return SetGameObservable();
         }
 
@@ -19,8 +20,12 @@ namespace Game
             _gameDi = gameDi;
             _gameDi.Register(_ => new Utils.Cam("GameCam"));
             _gameDi.Resolve<Utils.Cam>().Instantiate();
-            _gameDi.Resolve<Utils.UI>().New(Utils.UI.GAME_UI);
-            _gameDi.Resolve<Utils.UI>().AttachSceneUI(out _gameUI);
+            _gameDi.Resolve<Utils.UI>().AttachUI(Constant.Names.UI.GAME_UI, out _gameUI);
+        }
+
+        private void SetServices()
+        {
+            
         }
 
         private Observable<GameExitParams> SetGameObservable()
@@ -33,7 +38,7 @@ namespace Game
             var exitSignal = exitSignalSubject.Select(_ => exitState);
             exitSignal.Subscribe(_ =>
             {
-                _gameDi.Resolve<Utils.UI>().RemoveSceneUI<GameUI>();
+                _gameDi.Resolve<Utils.UI>().DetachUI<GameUI>();
                 _gameDi.Resolve<Utils.UI>().Clear();
             });
             

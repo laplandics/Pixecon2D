@@ -10,19 +10,26 @@ namespace Menu
         
         public Observable<MenuExitParams> Boot(Core.DI menuDi, MenuEntryParams entryParams)
         {
-            SetEssentials(menuDi);
+            SetServices(menuDi);
+            ResolveEssentials();
             return SetMenuObservable();
         }
 
-        private void SetEssentials(Core.DI menuDi)
+        private void SetServices(Core.DI menuDi)
         {
             _menuDi = menuDi;
             _menuDi.Register(_ => new Utils.Cam("MenuCam"));
-            _menuDi.Resolve<Utils.Cam>().Instantiate();
-            _menuDi.Resolve<Utils.UI>().New(Utils.UI.MENU_UI);
-            _menuDi.Resolve<Utils.UI>().AttachSceneUI(out _menuUI);
+            _menuDi.Register(_ => new MenuUiInteractor(
+                _menuDi.Resolve<Utils.UI>(),
+                _menuDi.Resolve<IProjectDataProvider>().ProjectData));
         }
-
+        
+        private void ResolveEssentials()
+        {
+            _menuDi.Resolve<Utils.Cam>().Instantiate();
+            _menuUI = _menuDi.Resolve<MenuUiInteractor>().Instantiate();
+        }
+        
         private Observable<MenuExitParams> SetMenuObservable()
         {
             var playSignalSubject = new Subject<Unit>();
@@ -33,7 +40,7 @@ namespace Menu
             var exitSignal = playSignalSubject.Select(_ => exitState);
             exitSignal.Subscribe(_ =>
             {
-                _menuDi.Resolve<Utils.UI>().RemoveSceneUI<MenuUI>();
+                _menuDi.Resolve<Utils.UI>().DetachUI<MenuUI>();
                 _menuDi.Resolve<Utils.UI>().Clear();
             });
             
