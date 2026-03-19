@@ -3,7 +3,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-
 namespace Menu
 {
     public class MenuUI : MonoBehaviour, ISceneUI
@@ -25,7 +24,7 @@ namespace Menu
 
         public void OnAttached()
         {
-            AssignButtons(); 
+            AssignButtons();
         }
 
         private void AssignButtons()
@@ -39,7 +38,7 @@ namespace Menu
         private void OnPlayButtonClicked()
         {
             infoPanelTitle.text = "ИГРАТЬ";
-            _playSignal.OnNext(Unit.Default);
+            _newPanelSignal.OnNext(Constant.Names.UI.PLAY_INFO_PANEL);
         }
 
         private void OnVocabularyButtonClicked()
@@ -51,19 +50,25 @@ namespace Menu
         private void OnPreferencesButtonClicked()
         {
             infoPanelTitle.text = "НАСТРОЙКИ";
+            _newPanelSignal.OnNext(Constant.Names.UI.PREFERENCES_INFO_PANEL);
         }
 
         private void OnAboutButtonClicked()
         {
             infoPanelTitle.text = "О НАС";
+            _newPanelSignal.OnNext(Constant.Names.UI.ABOUT_INFO_PANEL);
         }
 
+        public void SendDefaultSignal()
+        {
+            OnPlayButtonClicked();
+        }
+        
         public void OnRemoved()
         {
             
         }
         
-        public void Bind(Subject<Unit> playSignal) { _playSignal = playSignal; }
         public void Bind(Subject<string> panelSignal) { _newPanelSignal = panelSignal; }
         
         public RectTransform UITransform => gameObject.GetComponent<RectTransform>();

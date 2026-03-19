@@ -191,11 +191,11 @@ RectTransform:
   - {fileID: 920526366570871499}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0, y: 0.5}
+  m_AnchorMax: {x: 1, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_Pivot: {x: 0, y: 1}
 --- !u!114 &2704215116186085277
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -211,7 +211,7 @@ MonoBehaviour:
   m_Padding:
     m_Left: 0
     m_Right: 0
-    m_Top: 0
+    m_Top: 40
     m_Bottom: 0
   m_ChildAlignment: 4
   m_Spacing: 30
@@ -250,9 +250,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   vocabulariesTabsButtonsContainer: {fileID: 1273831204288621695}
   vocabularyTabButtonPrefab: {fileID: 3835443296815672258, guid: 678e67479e5e0a24cbc0d51850415e66, type: 3}
-  vocabularyTitlePrefab: {fileID: -7069895478423140788, guid: 43da9947afbea1147800796c620209db, type: 3}
-  vocabularyEntryPrefab: {fileID: 960232226104789771, guid: 32ff9ea18a6130845bab5801da0014e8, type: 3}
-  vocabularyAddEntryPrefab: {fileID: -6516094231445466756, guid: 5181687519330ab4a88efa48b9cb74a3, type: 3}
 --- !u!1 &4224428923769926114
 GameObject:
   m_ObjectHideFlags: 0

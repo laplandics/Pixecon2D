@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using R3;
 using UnityEngine;
 
 namespace Menu
@@ -16,7 +17,7 @@ namespace Menu
         private VocabularyTabButtonUI _newVocabularyTabButton;
         private readonly List<VocabularyTabButtonUI> _vocabularyTabButtons = new();
         
-        public void LoadElements(Proxy.ProjectDataProxy pdp)
+        public void LoadElements(Proxy.ProjectDataProxy pdp, Dictionary<string, Subject<Unit>> signals)
         {
             _pdp = pdp;
             _buttonsIndex = 0;
@@ -48,19 +49,18 @@ namespace Menu
 
         private void OnNewVocabularyTabButtonClicked()
         {
-            var newVocabData = new Data.VocabularyData
-            {
-                key = $"Vocabulary{_pdp.Vocabularies.Count}",
-                isDone = false,
-                isIncluded = true,
-                title = $"Новый словарь {_pdp.Vocabularies.Count + 1}",
-                vocabularyEntries = new List<Data.VocabularyEntryData>()
-            };
-            var newVocabProxy = new Proxy.VocabularyDataProxy(newVocabData);
-            _pdp.Vocabularies.Add(newVocabProxy);
+            var newVocabProxySignal = new ReactiveProperty<Proxy.VocabularyDataProxy>();
+            newVocabProxySignal.Skip(1).Subscribe(InstantiateTabButton);
+            
+            //Command processor use
+            Debug.LogWarning("Move command processor registration to menu registrations");
+            var cmd = new Cmd.CommandProcessor();
+            cmd.RegisterHandler(new CmdCreateVocabularyHandler(_pdp));
+            cmd.Process(new CmdCreateVocabulary($"Новый словарь {_pdp.Vocabularies.Count + 1}", newVocabProxySignal));
+            
             Destroy(_newVocabularyTabButton.gameObject);
-            InstantiateTabButton(newVocabProxy);
             CreateNewTabVocabularyTabButton();
+            newVocabProxySignal.OnCompleted();
         }
 
         private void InstantiateTabButton(Proxy.VocabularyDataProxy vocabulary)
@@ -72,7 +72,7 @@ namespace Menu
             newTabButton.tabIcon.gameObject.SetActive(false);
             newTabButton.tabName.gameObject.SetActive(true);
             newTabButton.tabName.text = $"{_buttonsIndex + 1}";
-            newTabButton.VocabularyInfo = vocabulary;
+            newTabButton.VocabularyProxy = vocabulary;
                 
             newTabButton.tabButton.onClick.AddListener(() =>
                 OnExistingVocabularyTabButtonClicked(newTabButton));
@@ -82,7 +82,7 @@ namespace Menu
         
         public void ClearElements()
         {
-            
+            Destroy(gameObject);
         }
     }
 }

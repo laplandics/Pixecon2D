@@ -18,7 +18,7 @@ namespace Proxy
         public VocabularyDataProxy(Data.VocabularyData origin)
         {
             Origin = origin;
-            Id = origin.id;
+            Id = origin.entityID;
             Key = origin.key;
             
             Title = new ReactiveProperty<string>(origin.title);
@@ -43,7 +43,7 @@ namespace Proxy
             {
                 var removedVocabularyEntryDataProxy = removeEvent.Value;
                 var removedVocabularyEntryData = origin.vocabularyEntries.FirstOrDefault(entry =>
-                    entry.id == removedVocabularyEntryDataProxy.Id);
+                    entry.entityID == removedVocabularyEntryDataProxy.Id);
                 origin.vocabularyEntries.Remove(removedVocabularyEntryData);
             });
         }

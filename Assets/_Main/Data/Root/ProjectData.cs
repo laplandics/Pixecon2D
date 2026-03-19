@@ -6,7 +6,7 @@ namespace Data
     [Serializable]
     public class ProjectData
     {
+        public int globalEntityId;
         public List<VocabularyData> vocabularies = new();
-        public List<VocabularyEntryData> vocabulariesEntries = new();
     }
 }

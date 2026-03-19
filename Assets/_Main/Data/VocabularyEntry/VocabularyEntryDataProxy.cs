@@ -15,7 +15,7 @@ namespace Proxy
         public VocabularyEntryDataProxy(Data.VocabularyEntryData origin)
         {
             Origin = origin;
-            Id = origin.id;
+            Id = origin.entityID;
             Key = origin.key;
             
             Word = new ReactiveProperty<string>(origin.word);

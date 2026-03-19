@@ -4,9 +4,8 @@ using System.Collections.Generic;
 namespace Data
 {
     [Serializable]
-    public class VocabularyData
+    public class VocabularyData : EntityData
     {
-        public int id;
         public string key;
         
         public string title;

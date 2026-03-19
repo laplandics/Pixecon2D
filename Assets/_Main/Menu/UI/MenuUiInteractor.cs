@@ -1,17 +1,28 @@
-﻿using R3;
+﻿using System.Collections.Generic;
+using R3;
 using UnityEngine;
 
 namespace Menu
 {
+    
     public class MenuUiInteractor
     {
+        public const string PLAY_BUTTON_SIGNAL_NAME = "Play";
+        
+        private MenuUI _menuUI;
+        private IMenuUiInfoPanel _currentPanel;
+        private string _currentPanelName;
         private readonly Utils.UI _rootUi;
         private readonly Proxy.ProjectDataProxy _projectDataProxy;
-        private string _currentPanelName;
-        private MenuUI _menuUI;
-        
-        public MenuUiInteractor(Utils.UI rootUi, Proxy.ProjectDataProxy projectDataProxy)
-        { _rootUi = rootUi; _projectDataProxy = projectDataProxy; }
+        private readonly Dictionary<string, Subject<Unit>> _uiSignals;
+
+        public MenuUiInteractor(Utils.UI rootUi, Proxy.ProjectDataProxy projectDataProxy,
+            Dictionary<string, Subject<Unit>> uiSignals)
+        {
+            _rootUi = rootUi;
+            _projectDataProxy = projectDataProxy;
+            _uiSignals = uiSignals;
+        }
 
         public MenuUI Instantiate()
         {
@@ -19,18 +30,21 @@ namespace Menu
             var switchInfoPanelSignalSubject = new Subject<string>();
             _menuUI.Bind(switchInfoPanelSignalSubject);
             switchInfoPanelSignalSubject.Subscribe(OnInfoPanelSwitched);
+            _menuUI.SendDefaultSignal();
             return _menuUI;
         }
 
         private void OnInfoPanelSwitched(string panelName)
         {
             if (_currentPanelName == panelName) return;
+            _currentPanel?.ClearElements();
             _currentPanelName = panelName;
             var panelPrefab = Resources.Load<GameObject>(panelName);
             var newPanelObj = Object.Instantiate(panelPrefab, _menuUI.ViewPortContainer, false);
             var newPanel = newPanelObj.GetComponent<IMenuUiInfoPanel>();
             _menuUI.scrollRect.content = newPanelObj.GetComponent<RectTransform>();
-            newPanel.LoadElements(_projectDataProxy);
+            _currentPanel = newPanel;
+            newPanel.LoadElements(_projectDataProxy, _uiSignals);
         }
     }
 }

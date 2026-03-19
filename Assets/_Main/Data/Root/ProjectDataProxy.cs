@@ -6,30 +6,34 @@ namespace Proxy
 {
     public class ProjectDataProxy
     {
-        public ObservableList<VocabularyDataProxy> Vocabularies { get; } = new();
+        private readonly Data.ProjectData _origin;
         
         public ProjectDataProxy(Data.ProjectData origin)
         {
+            _origin = origin;
             origin.vocabularies.ForEach(vocabularyData =>
                 Vocabularies.Add(new VocabularyDataProxy(vocabularyData)));
-            SubscribeToVocabulariesChange(origin);
+            SubscribeToVocabulariesChange();
         }
 
-        private void SubscribeToVocabulariesChange(Data.ProjectData origin)
+        private void SubscribeToVocabulariesChange()
         {
             Vocabularies.ObserveAdd().Subscribe(addEvent =>
             {
                 var addedVocabularyDataProxy = addEvent.Value;
-                origin.vocabularies.Add(addedVocabularyDataProxy.Origin);
+                _origin.vocabularies.Add(addedVocabularyDataProxy.Origin);
             });
 
             Vocabularies.ObserveRemove().Subscribe(removeEvent =>
             {
                 var removedVocabularyDataProxy = removeEvent.Value;
-                var removedVocabularyData = origin.vocabularies.FirstOrDefault(vocabulary =>
-                    vocabulary.id == removedVocabularyDataProxy.Id);
-                origin.vocabularies.Remove(removedVocabularyData);
+                var removedVocabularyData = _origin.vocabularies.FirstOrDefault(vocabulary =>
+                    vocabulary.entityID == removedVocabularyDataProxy.Id);
+                _origin.vocabularies.Remove(removedVocabularyData);
             });
         }
+
+        public int GetGlobalEntityId => _origin.globalEntityId++;
+        public ObservableList<VocabularyDataProxy> Vocabularies { get; } = new();
     }
 }

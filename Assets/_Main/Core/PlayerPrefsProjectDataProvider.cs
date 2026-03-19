@@ -12,6 +12,11 @@ namespace Core
         
         public Observable<Proxy.ProjectDataProxy> LoadProjectData()
         {
+            Debug.LogWarning("Remove temporal editor code (PlayerPrefs load)");
+#if UNITY_EDITOR
+            PlayerPrefs.DeleteKey(Constant.Names.PlayerPrefs.PROJECT_DATA_KEY);
+#endif
+            
             if (!PlayerPrefs.HasKey(Constant.Names.PlayerPrefs.PROJECT_DATA_KEY))
             {
                 ProjectData = CreateNewProjectData();
@@ -47,7 +52,7 @@ namespace Core
         {
             Debug.LogWarning("Create initial projectData settings. " +
                              $"Remove temporal data creation from {GetType().Name}");
-
+            
             _initialProjectData = new Data.ProjectData
             {
                 vocabularies = new List<Data.VocabularyData>

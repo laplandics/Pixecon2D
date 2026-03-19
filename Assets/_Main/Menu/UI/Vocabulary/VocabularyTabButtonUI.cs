@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using R3;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -55,13 +56,13 @@ namespace Menu
         private void CreateTitle()
         {
             _vocabularyTitleUI = Instantiate(vocabularyTitlePrefab, _container, false);
-            _vocabularyTitleUI.titleInput.text = VocabularyInfo.Title.Value;
-            _vocabularyTitleUI.titleInput.onValueChanged.AddListener(text => VocabularyInfo.Title.Value = text);
+            _vocabularyTitleUI.titleInput.text = VocabularyProxy.Title.Value;
+            _vocabularyTitleUI.titleInput.onValueChanged.AddListener(text => VocabularyProxy.Title.Value = text);
         }
 
         private void CreateExistingEntriesUIs()
         {
-            foreach (var entryDataProxy in VocabularyInfo.VocabularyEntries)
+            foreach (var entryDataProxy in VocabularyProxy.VocabularyEntries)
             { InstantiateEntry(entryDataProxy); }
         }
 
@@ -85,20 +86,18 @@ namespace Menu
 
         private void OnAddEntryButtonClicked()
         {
-            var newEntryData = new Data.VocabularyEntryData
-            {
-                key = $"Entry{VocabularyInfo.VocabularyEntries.Count}",
-                isDone = false,
-                translation = "",
-                word = ""
-            };
+            var entryDataProxySignal = new ReactiveProperty<Proxy.VocabularyEntryDataProxy>();
+            entryDataProxySignal.Skip(1).Subscribe(InstantiateEntry);
             
-            var newEntryDataProxy = new Proxy.VocabularyEntryDataProxy(newEntryData);
-            VocabularyInfo.VocabularyEntries.Add(newEntryDataProxy);
+            // Command processor use
+            Debug.LogWarning("Move command processor registration to menu registrations");
+            var cmd = new Cmd.CommandProcessor();
+            cmd.RegisterHandler(new CmdCreateVocabularyEntryHandler(VocabularyProxy));
+            cmd.Process(new CmdCreateVocabularyEntry("", "", entryDataProxySignal));
             
             DestroyAddEntryUI();
-            InstantiateEntry(newEntryDataProxy);
             CreateAddEntryUI();
+            entryDataProxySignal.OnCompleted();
         }
 
         private void DestroyAddEntryUI()
@@ -117,6 +116,6 @@ namespace Menu
             DestroyAddEntryUI();
         }
 
-        public Proxy.VocabularyDataProxy VocabularyInfo { get; set; }
+        public Proxy.VocabularyDataProxy VocabularyProxy { get; set; }
     }
 }

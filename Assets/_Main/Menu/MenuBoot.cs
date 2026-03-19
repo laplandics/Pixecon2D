@@ -1,4 +1,5 @@
-﻿using R3;
+﻿using System.Collections.Generic;
+using R3;
 using UnityEngine;
 
 namespace Menu
@@ -6,38 +7,39 @@ namespace Menu
     public class MenuBoot : MonoBehaviour
     {
         private Core.DI _menuDi;
-        private MenuUI _menuUI;
+        private Subject<Unit> _playSignal;
         
         public Observable<MenuExitParams> Boot(Core.DI menuDi, MenuEntryParams entryParams)
         {
-            SetServices(menuDi);
-            ResolveEssentials();
+            SetEssentials(menuDi);
+            SetUI();
             return SetMenuObservable();
         }
 
-        private void SetServices(Core.DI menuDi)
+        private void SetEssentials(Core.DI menuDi)
         {
             _menuDi = menuDi;
             _menuDi.Register(_ => new Utils.Cam("MenuCam"));
+            _menuDi.Resolve<Utils.Cam>().Instantiate();
+        }
+
+        private void SetUI()
+        {
+            _playSignal = new Subject<Unit>();
             _menuDi.Register(_ => new MenuUiInteractor(
                 _menuDi.Resolve<Utils.UI>(),
-                _menuDi.Resolve<IProjectDataProvider>().ProjectData));
-        }
-        
-        private void ResolveEssentials()
-        {
-            _menuDi.Resolve<Utils.Cam>().Instantiate();
-            _menuUI = _menuDi.Resolve<MenuUiInteractor>().Instantiate();
+                _menuDi.Resolve<IProjectDataProvider>().ProjectData,
+                new Dictionary<string, Subject<Unit>>
+                { [MenuUiInteractor.PLAY_BUTTON_SIGNAL_NAME] = _playSignal}));
+            
+            _menuDi.Resolve<MenuUiInteractor>().Instantiate();
         }
         
         private Observable<MenuExitParams> SetMenuObservable()
         {
-            var playSignalSubject = new Subject<Unit>();
-            _menuUI.Bind(playSignalSubject);
-
             var gameEntryState = new Game.GameEntryParams();
             var exitState = new MenuExitParams(gameEntryState);
-            var exitSignal = playSignalSubject.Select(_ => exitState);
+            var exitSignal = _playSignal.Select(_ => exitState);
             exitSignal.Subscribe(_ =>
             {
                 _menuDi.Resolve<Utils.UI>().DetachUI<MenuUI>();

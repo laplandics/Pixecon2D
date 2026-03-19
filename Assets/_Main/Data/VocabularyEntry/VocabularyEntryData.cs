@@ -3,9 +3,8 @@
 namespace Data
 {
     [Serializable]
-    public class VocabularyEntryData
+    public class VocabularyEntryData : EntityData
     {
-        public int id;
         public string key;
         
         public string word;

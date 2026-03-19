@@ -26,6 +26,7 @@ public class Boot
         _rootDi.Register(_ => new Utils.UI(), true);
         _rootDi.Register<IProjectDataProvider>(_ => new Core.PlayerPrefsProjectDataProvider(), true);
         
+        Debug.LogWarning("Remove temporal editor code (Boot scene)");
 #if UNITY_EDITOR
         var sceneName = SceneManager.GetActiveScene().name;
         if (sceneName is Constant.Names.Scenes.MENU or Constant.Names.Scenes.GAME)
