@@ -26,6 +26,7 @@ namespace Proxy
             IsDone = new ReactiveProperty<bool>(origin.isDone);
             origin.vocabularyEntries.ForEach(e => VocabularyEntries.Add(new VocabularyEntryDataProxy(e)));
             
+            Title.Skip(1).Subscribe(title => origin.title = title);
             IsIncluded.Skip(1).Subscribe(isIncluded => origin.isIncluded = isIncluded);
             IsDone.Skip(1).Subscribe(isDone => origin.isDone = isDone);
             SubscribeToVocabularyEntryChange(origin);

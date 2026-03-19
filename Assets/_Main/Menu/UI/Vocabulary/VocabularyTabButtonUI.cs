@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Linq;
+using ObservableCollections;
 using R3;
 using TMPro;
 using UnityEngine;
@@ -26,10 +28,19 @@ namespace Menu
         public Color iconUnselectedColor;
         public Color bgUnselectedColor;
         
+        private VocabularyCreator _vocabularyCreator;
         private RectTransform _container;
         private VocabularyTitleUI _vocabularyTitleUI;
         private VocabularyAddEntryUI _vocabularyAddEntryUI;
         private readonly List<VocabularyEntryUI> _vocabularyEntryUis = new();
+
+        public void Initialize(VocabularyCreator vocabularyCreator)
+        {
+            _vocabularyCreator = vocabularyCreator;
+            var vocabulary = _vocabularyCreator.GetVocabularies.FirstOrDefault(v => v.Id == VocabularyProxy.Id);
+            if (vocabulary == null) {Debug.LogError("Vocabulary id not found"); return; }
+            vocabulary.VocabularyEntries.ObserveAdd().Subscribe(e => InstantiateEntry(e.Value));
+        }
         
         public void SetSelected()
         {
@@ -86,18 +97,9 @@ namespace Menu
 
         private void OnAddEntryButtonClicked()
         {
-            var entryDataProxySignal = new ReactiveProperty<Proxy.VocabularyEntryDataProxy>();
-            entryDataProxySignal.Skip(1).Subscribe(InstantiateEntry);
-            
-            // Command processor use
-            Debug.LogWarning("Move command processor registration to menu registrations");
-            var cmd = new Cmd.CommandProcessor();
-            cmd.RegisterHandler(new CmdCreateVocabularyEntryHandler(VocabularyProxy));
-            cmd.Process(new CmdCreateVocabularyEntry("", "", entryDataProxySignal));
-            
+            _vocabularyCreator.CreateNewVocabularyEntry(VocabularyProxy.Id, "", "");
             DestroyAddEntryUI();
             CreateAddEntryUI();
-            entryDataProxySignal.OnCompleted();
         }
 
         private void DestroyAddEntryUI()

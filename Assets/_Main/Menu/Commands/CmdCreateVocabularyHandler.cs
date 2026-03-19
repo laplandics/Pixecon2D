@@ -27,8 +27,6 @@ namespace Menu
             var newVocabProxy = new Proxy.VocabularyDataProxy(newVocabData);
             _pdp.Vocabularies.Add(newVocabProxy);
             
-            command.Result.Value = newVocabProxy;
-            
             return true;
         }
     }

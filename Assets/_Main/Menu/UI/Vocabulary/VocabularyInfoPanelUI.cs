@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using ObservableCollections;
 using R3;
 using UnityEngine;
 
@@ -13,14 +14,17 @@ namespace Menu
         public VocabularyTabButtonUI vocabularyTabButtonPrefab;
 
         private int _buttonsIndex;
-        private Proxy.ProjectDataProxy _pdp;
+        private VocabularyCreator _vocabularyCreator;
         private VocabularyTabButtonUI _newVocabularyTabButton;
         private readonly List<VocabularyTabButtonUI> _vocabularyTabButtons = new();
         
-        public void LoadElements(Proxy.ProjectDataProxy pdp, Dictionary<string, Subject<Unit>> signals)
+        public void LoadElements(VocabularyCreator vocabCreator, Dictionary<string, Subject<Unit>> signals)
         {
-            _pdp = pdp;
+            _vocabularyCreator = vocabCreator;
             _buttonsIndex = 0;
+            _vocabularyCreator.GetVocabularies.ObserveAdd().Subscribe(e =>
+                InstantiateTabButton(e.Value));
+            
             LoadVocabularyTabButtons();
             CreateNewTabVocabularyTabButton();
         }
@@ -35,7 +39,7 @@ namespace Menu
 
         private void LoadVocabularyTabButtons()
         {
-            foreach (var vocabulary in _pdp.Vocabularies)
+            foreach (var vocabulary in _vocabularyCreator.GetVocabularies)
             { InstantiateTabButton(vocabulary); }
         }
 
@@ -49,18 +53,9 @@ namespace Menu
 
         private void OnNewVocabularyTabButtonClicked()
         {
-            var newVocabProxySignal = new ReactiveProperty<Proxy.VocabularyDataProxy>();
-            newVocabProxySignal.Skip(1).Subscribe(InstantiateTabButton);
-            
-            //Command processor use
-            Debug.LogWarning("Move command processor registration to menu registrations");
-            var cmd = new Cmd.CommandProcessor();
-            cmd.RegisterHandler(new CmdCreateVocabularyHandler(_pdp));
-            cmd.Process(new CmdCreateVocabulary($"Новый словарь {_pdp.Vocabularies.Count + 1}", newVocabProxySignal));
-            
+            _vocabularyCreator.CreateVocabulary($"Новый словарь {_vocabularyCreator.GetVocabularies.Count + 1}");
             Destroy(_newVocabularyTabButton.gameObject);
             CreateNewTabVocabularyTabButton();
-            newVocabProxySignal.OnCompleted();
         }
 
         private void InstantiateTabButton(Proxy.VocabularyDataProxy vocabulary)
@@ -73,7 +68,7 @@ namespace Menu
             newTabButton.tabName.gameObject.SetActive(true);
             newTabButton.tabName.text = $"{_buttonsIndex + 1}";
             newTabButton.VocabularyProxy = vocabulary;
-                
+            newTabButton.Initialize(_vocabularyCreator);
             newTabButton.tabButton.onClick.AddListener(() =>
                 OnExistingVocabularyTabButtonClicked(newTabButton));
                 

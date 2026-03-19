@@ -12,7 +12,6 @@ namespace Menu
         public Observable<MenuExitParams> Boot(Core.DI menuDi, MenuEntryParams entryParams)
         {
             SetEssentials(menuDi);
-            SetUI();
             return SetMenuObservable();
         }
 
@@ -20,19 +19,27 @@ namespace Menu
         {
             _menuDi = menuDi;
             _menuDi.Register(_ => new Utils.Cam("MenuCam"));
-            _menuDi.Resolve<Utils.Cam>().Instantiate();
-        }
+            _menuDi.Register<Cmd.ICommandProcessor>(_ => new Cmd.CommandProcessor(), true);
 
-        private void SetUI()
-        {
+            _menuDi.Resolve<Utils.Cam>().Instantiate();
+            _menuDi.Resolve<Cmd.ICommandProcessor>().RegisterHandler(new CmdCreateVocabularyHandler(
+                _menuDi.Resolve<IProjectDataProvider>().ProjectData));
+            _menuDi.Resolve<Cmd.ICommandProcessor>().RegisterHandler(new CmdCreateVocabularyEntryHandler(
+                _menuDi.Resolve<IProjectDataProvider>().ProjectData));
+            
+            _menuDi.Register(_ => new VocabularyCreator(
+                _menuDi.Resolve<Cmd.ICommandProcessor>(),
+                _menuDi.Resolve<IProjectDataProvider>().ProjectData.Vocabularies));
+            
             _playSignal = new Subject<Unit>();
             _menuDi.Register(_ => new MenuUiInteractor(
                 _menuDi.Resolve<Utils.UI>(),
-                _menuDi.Resolve<IProjectDataProvider>().ProjectData,
+                _menuDi.Resolve<VocabularyCreator>(),
                 new Dictionary<string, Subject<Unit>>
                 { [MenuUiInteractor.PLAY_BUTTON_SIGNAL_NAME] = _playSignal}));
             
             _menuDi.Resolve<MenuUiInteractor>().Instantiate();
+            
         }
         
         private Observable<MenuExitParams> SetMenuObservable()
@@ -44,8 +51,8 @@ namespace Menu
             {
                 _menuDi.Resolve<Utils.UI>().DetachUI<MenuUI>();
                 _menuDi.Resolve<Utils.UI>().Clear();
+                _menuDi.Resolve<IProjectDataProvider>().SaveProjectData();
             });
-            
             return exitSignal;
         }
     }

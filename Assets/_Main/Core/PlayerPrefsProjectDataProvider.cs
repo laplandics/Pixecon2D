@@ -13,9 +13,9 @@ namespace Core
         public Observable<Proxy.ProjectDataProxy> LoadProjectData()
         {
             Debug.LogWarning("Remove temporal editor code (PlayerPrefs load)");
-#if UNITY_EDITOR
-            PlayerPrefs.DeleteKey(Constant.Names.PlayerPrefs.PROJECT_DATA_KEY);
-#endif
+//#if UNITY_EDITOR
+            //PlayerPrefs.DeleteKey(Constant.Names.PlayerPrefs.PROJECT_DATA_KEY);
+//#endif
             
             if (!PlayerPrefs.HasKey(Constant.Names.PlayerPrefs.PROJECT_DATA_KEY))
             {
@@ -36,7 +36,6 @@ namespace Core
         {
             var json = JsonUtility.ToJson(_initialProjectData);
             PlayerPrefs.SetString(Constant.Names.PlayerPrefs.PROJECT_DATA_KEY, json);
-            
             return Observable.Return(true);
         }
 
@@ -59,6 +58,7 @@ namespace Core
                 {
                     new()
                     {
+                        entityID = 0,
                         key = "Vocabulary0",
                         title = "Новый словарь 1",
                         isDone = false,
@@ -83,8 +83,9 @@ namespace Core
                     }
                 },
             };
-            
-            return new Proxy.ProjectDataProxy(_initialProjectData);
+            var proxy = new Proxy.ProjectDataProxy(_initialProjectData);
+            _ = proxy.GetGlobalEntityId;
+            return proxy;
         }
     }
 }

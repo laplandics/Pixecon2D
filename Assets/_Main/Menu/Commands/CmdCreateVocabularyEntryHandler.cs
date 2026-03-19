@@ -4,16 +4,17 @@ namespace Menu
 {
     public class CmdCreateVocabularyEntryHandler : ICommandHandler<CmdCreateVocabularyEntry>
     {
-        private readonly Proxy.VocabularyDataProxy _vocabProxy;
+        private readonly Proxy.ProjectDataProxy _pdp;
 
-        public CmdCreateVocabularyEntryHandler(Proxy.VocabularyDataProxy vocabProxy)
-        { _vocabProxy = vocabProxy; }
+
+        public CmdCreateVocabularyEntryHandler(Proxy.ProjectDataProxy pdp)
+        { _pdp = pdp; }
         
         public bool Handle(CmdCreateVocabularyEntry command)
         {
             var newEntryData = new Data.VocabularyEntryData
             {
-                entityID = _vocabProxy.VocabularyEntries.Count,
+                entityID = _pdp.GetGlobalEntityId,
                 key = Constant.Names.EntityData.VOCABULARY_ENTRY_BASE_KEY,
                 isDone = command.IsDone,
                 translation = command.Translation,
@@ -21,9 +22,9 @@ namespace Menu
             };
             
             var newEntryProxy = new Proxy.VocabularyEntryDataProxy(newEntryData);
+            foreach (var vocabulary in _pdp.Vocabularies)
+            { if (vocabulary.Id == command.VocabId) { vocabulary.VocabularyEntries.Add(newEntryProxy); } }
             
-            command.Result.Value = newEntryProxy;
-            _vocabProxy.VocabularyEntries.Add(newEntryProxy);
             return true;
         }
     }

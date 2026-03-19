@@ -11,8 +11,8 @@ namespace Menu
         public Button playButton;
         
         private Subject<Unit> _playSignal;
-        
-        public void LoadElements(ProjectDataProxy pdp, Dictionary<string, Subject<Unit>> signals)
+
+        public void LoadElements(VocabularyCreator vocabCreator, Dictionary<string, Subject<Unit>> signals)
         {
             _playSignal = signals[MenuUiInteractor.PLAY_BUTTON_SIGNAL_NAME];
             playButton.onClick.AddListener(() => _playSignal.OnNext(Unit.Default));

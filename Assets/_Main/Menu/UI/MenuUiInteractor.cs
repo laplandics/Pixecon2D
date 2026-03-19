@@ -4,7 +4,6 @@ using UnityEngine;
 
 namespace Menu
 {
-    
     public class MenuUiInteractor
     {
         public const string PLAY_BUTTON_SIGNAL_NAME = "Play";
@@ -13,14 +12,13 @@ namespace Menu
         private IMenuUiInfoPanel _currentPanel;
         private string _currentPanelName;
         private readonly Utils.UI _rootUi;
-        private readonly Proxy.ProjectDataProxy _projectDataProxy;
+        private readonly VocabularyCreator _vocabCreator;
         private readonly Dictionary<string, Subject<Unit>> _uiSignals;
 
-        public MenuUiInteractor(Utils.UI rootUi, Proxy.ProjectDataProxy projectDataProxy,
-            Dictionary<string, Subject<Unit>> uiSignals)
+        public MenuUiInteractor(Utils.UI rootUi, VocabularyCreator vocabCreator, Dictionary<string, Subject<Unit>> uiSignals)
         {
             _rootUi = rootUi;
-            _projectDataProxy = projectDataProxy;
+            _vocabCreator = vocabCreator;
             _uiSignals = uiSignals;
         }
 
@@ -44,7 +42,7 @@ namespace Menu
             var newPanel = newPanelObj.GetComponent<IMenuUiInfoPanel>();
             _menuUI.scrollRect.content = newPanelObj.GetComponent<RectTransform>();
             _currentPanel = newPanel;
-            newPanel.LoadElements(_projectDataProxy, _uiSignals);
+            newPanel.LoadElements(_vocabCreator, _uiSignals);
         }
     }
 }
