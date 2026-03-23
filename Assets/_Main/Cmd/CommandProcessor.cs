@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Cmd
 {
-    public class CommandProcessor : ICommandProcessor
+    public class CommandProcessor : ICommandProcessor, IDisposable
     {
         private readonly Dictionary<Type, object> _handlesMap = new();
         
@@ -19,6 +19,11 @@ namespace Cmd
             var handlerTyped = (ICommandHandler<TCommand>) handler;
             var result = handlerTyped.Handle(command);
             return result;
+        }
+
+        public void Dispose()
+        {
+            _handlesMap.Clear();
         }
     }
 }

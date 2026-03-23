@@ -19,7 +19,7 @@ namespace Menu
             _commandProcessor.Process(new CmdCreateVocabulary(title));
         }
 
-        public void CreateNewVocabularyEntry(int vocabId, string word, string translation, bool isDone = false)
+        public void CreateVocabularyEntry(int vocabId, string word, string translation, bool isDone = false)
         {
             _commandProcessor.Process(new CmdCreateVocabularyEntry(vocabId, word, translation, isDone));
         }

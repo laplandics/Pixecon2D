@@ -11,8 +11,7 @@ namespace Proxy
         public Data.VocabularyData Origin { get; }
         
         public ReactiveProperty<string> Title { get; }
-        public ReactiveProperty<bool> IsIncluded { get; }
-        public ReactiveProperty<bool> IsDone { get; }
+        public ReactiveProperty<bool> IsCompleted { get; }
         public ObservableList<VocabularyEntryDataProxy> VocabularyEntries { get; } = new();
 
         public VocabularyDataProxy(Data.VocabularyData origin)
@@ -22,13 +21,11 @@ namespace Proxy
             Key = origin.key;
             
             Title = new ReactiveProperty<string>(origin.title);
-            IsIncluded = new ReactiveProperty<bool>(origin.isIncluded);
-            IsDone = new ReactiveProperty<bool>(origin.isDone);
+            IsCompleted = new ReactiveProperty<bool>(origin.isCompleted);
             origin.vocabularyEntries.ForEach(e => VocabularyEntries.Add(new VocabularyEntryDataProxy(e)));
             
             Title.Skip(1).Subscribe(title => origin.title = title);
-            IsIncluded.Skip(1).Subscribe(isIncluded => origin.isIncluded = isIncluded);
-            IsDone.Skip(1).Subscribe(isDone => origin.isDone = isDone);
+            IsCompleted.Skip(1).Subscribe(isCompleted => origin.isCompleted = isCompleted);
             SubscribeToVocabularyEntryChange(origin);
         }
 

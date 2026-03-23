@@ -54,6 +54,7 @@ namespace Menu
         private void OnNewVocabularyTabButtonClicked()
         {
             _vocabularyCreator.CreateVocabulary($"Новый словарь {_vocabularyCreator.GetVocabularies.Count + 1}");
+            
             Destroy(_newVocabularyTabButton.gameObject);
             CreateNewTabVocabularyTabButton();
         }

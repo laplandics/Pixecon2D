@@ -1,58 +1,47 @@
 ﻿using System.Collections.Generic;
+using Cmd;
+using ProjectSpace;
 using R3;
 using UnityEngine;
+using Utils;
 
 namespace Menu
 {
     public class MenuBoot : MonoBehaviour
     {
-        private Core.DI _menuDi;
-        private Subject<Unit> _playSignal;
-        
         public Observable<MenuExitParams> Boot(Core.DI menuDi, MenuEntryParams entryParams)
         {
-            SetEssentials(menuDi);
-            return SetMenuObservable();
-        }
+            menuDi.Register(_ => new Cam("MenuCam"), true);
 
-        private void SetEssentials(Core.DI menuDi)
-        {
-            _menuDi = menuDi;
-            _menuDi.Register(_ => new Utils.Cam("MenuCam"));
-            _menuDi.Register<Cmd.ICommandProcessor>(_ => new Cmd.CommandProcessor(), true);
-
-            _menuDi.Resolve<Utils.Cam>().Instantiate();
-            _menuDi.Resolve<Cmd.ICommandProcessor>().RegisterHandler(new CmdCreateVocabularyHandler(
-                _menuDi.Resolve<IProjectDataProvider>().ProjectData));
-            _menuDi.Resolve<Cmd.ICommandProcessor>().RegisterHandler(new CmdCreateVocabularyEntryHandler(
-                _menuDi.Resolve<IProjectDataProvider>().ProjectData));
+            menuDi.Resolve<Cam>().Instantiate();
+            menuDi.Resolve<ICommandProcessor>().RegisterHandler(new CmdCreateVocabularyHandler(
+                menuDi.Resolve<IProjectDataProvider>().ProjectData));
+            menuDi.Resolve<ICommandProcessor>().RegisterHandler(new CmdCreateVocabularyEntryHandler(
+                menuDi.Resolve<IProjectDataProvider>().ProjectData));
             
-            _menuDi.Register(_ => new VocabularyCreator(
-                _menuDi.Resolve<Cmd.ICommandProcessor>(),
-                _menuDi.Resolve<IProjectDataProvider>().ProjectData.Vocabularies));
+            menuDi.Register(_ => new VocabularyCreator(
+                menuDi.Resolve<ICommandProcessor>(),
+                menuDi.Resolve<IProjectDataProvider>().ProjectData.Vocabularies));
             
-            _playSignal = new Subject<Unit>();
-            _menuDi.Register(_ => new MenuUiInteractor(
-                _menuDi.Resolve<Utils.UI>(),
-                _menuDi.Resolve<VocabularyCreator>(),
+            var playSignal = new Subject<Unit>();
+            menuDi.Register(_ => new MenuUiInteractor(
+                menuDi.Resolve<UI>(),
+                menuDi.Resolve<VocabularyCreator>(),
                 new Dictionary<string, Subject<Unit>>
-                { [MenuUiInteractor.PLAY_BUTTON_SIGNAL_NAME] = _playSignal}));
+                    { [MenuUiInteractor.PLAY_BUTTON_SIGNAL_NAME] = playSignal}));
             
-            _menuDi.Resolve<MenuUiInteractor>().Instantiate();
+            menuDi.Resolve<MenuUiInteractor>().Instantiate();
             
-        }
-        
-        private Observable<MenuExitParams> SetMenuObservable()
-        {
             var gameEntryState = new Game.GameEntryParams();
             var exitState = new MenuExitParams(gameEntryState);
-            var exitSignal = _playSignal.Select(_ => exitState);
+            var exitSignal = playSignal.Select(_ => exitState);
             exitSignal.Subscribe(_ =>
             {
-                _menuDi.Resolve<Utils.UI>().DetachUI<MenuUI>();
-                _menuDi.Resolve<Utils.UI>().Clear();
-                _menuDi.Resolve<IProjectDataProvider>().SaveProjectData();
+                menuDi.Resolve<UI>().DetachUIRootBinder<MenuUIRootBinder>();
+                menuDi.Resolve<UI>().Clear();
+                menuDi.Resolve<IProjectDataProvider>().SaveProjectData();
             });
+            
             return exitSignal;
         }
     }

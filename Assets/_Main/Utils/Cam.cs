@@ -11,7 +11,7 @@ namespace Utils
         
         public void Instantiate()
         {
-            var camPref = Resources.Load<Camera>("Prefabs/Cam");
+            var camPref = Resources.Load<Camera>(Constant.Names.World.CAM);
             var cam = Object.Instantiate(camPref);
             cam.name = _camName;
             cam.transform.position = new Vector3(0, 0, -10);

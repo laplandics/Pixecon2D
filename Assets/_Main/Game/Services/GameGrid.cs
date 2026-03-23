@@ -4,7 +4,7 @@ namespace Game
 {
     public class GameGrid
     {
-        private const float CELL_SIZE = 1f;
+        private const float CELL_SIZE = 1.1f;
         
         public GameGrid(Utils.Cam gameCamera)
         {
@@ -13,21 +13,26 @@ namespace Game
             
             var height = cameraSize * 2;
             var width = height * camera.aspect;
-            ColumnsCount = Mathf.FloorToInt(width / CELL_SIZE);
-            RowsCount = Mathf.FloorToInt(height / CELL_SIZE) * 2;
+            ColumnsCount = Mathf.Clamp(Mathf.FloorToInt(width / CELL_SIZE), 3, 4);
+            RowsCount = Mathf.Clamp(Mathf.FloorToInt(height / CELL_SIZE), 3, 4);
         
             var gridWorldWidth = ColumnsCount * CELL_SIZE;
             var gridWorldHeight = RowsCount * CELL_SIZE;
         
             var offsetX = (width - gridWorldWidth) / 2f;
-            var offsetY = (height - gridWorldHeight) / 2f;
+            var offsetY = ((height - gridWorldHeight) / 2f) - 1f;
         
             GridOrigin = new Vector2( -width / 2 + offsetX, -height / 2 + offsetY);
-            GridOrigin = new Vector2(GridOrigin.x, GridOrigin.y / 2);
-        
+            
             GridPositions = new Vector2Int[ColumnsCount * RowsCount];
-            for (var x = 0; x < ColumnsCount; x++) { for (var y = 0; y < RowsCount; y++)
-                { GridPositions[y * ColumnsCount + x] = new Vector2Int(x, y); } }
+            for (var x = 0; x < ColumnsCount; x++)
+            {
+                for (var y = 0; y < RowsCount; y++)
+                {
+                    GridPositions[y * ColumnsCount + x] = new Vector2Int(x, y);
+                }
+                
+            }
         }
         
         public Vector2Int WorldToGrid(Vector2 worldPos)
@@ -37,10 +42,10 @@ namespace Game
             return new Vector2Int(x, y);
         }
         
-        public Vector2 GridToWorld(Vector2Int cell)
+        public Vector2 GridToWorld(Vector2Int gridPosition)
         {
-            var x = GridOrigin.x + cell.x * CELL_SIZE + CELL_SIZE * 0.5f;
-            var y = GridOrigin.y + cell.y * CELL_SIZE + CELL_SIZE * 0.5f;
+            var x = GridOrigin.x + gridPosition.x * CELL_SIZE + CELL_SIZE * 0.5f;
+            var y = GridOrigin.y + gridPosition.y * CELL_SIZE + CELL_SIZE * 0.5f;
             return new Vector2(x, y);
         }
         

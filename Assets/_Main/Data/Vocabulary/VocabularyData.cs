@@ -9,8 +9,7 @@ namespace Data
         public string key;
         
         public string title;
-        public bool isIncluded;
-        public bool isDone;
+        public bool isCompleted;
         public List<VocabularyEntryData> vocabularyEntries;
     }
 }

@@ -20,8 +20,6 @@ namespace Menu
                 entityID = entityId,
                 key = Constant.Names.EntityData.VOCABULARY_BASE_KEY,
                 title = command.VocabularyTitle,
-                isDone = command.IsDone,
-                isIncluded = command.IsIncluded,
                 vocabularyEntries = new List<Data.VocabularyEntryData>()
             };
             var newVocabProxy = new Proxy.VocabularyDataProxy(newVocabData);

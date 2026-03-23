@@ -1,7 +1,67 @@
 {
     "version": 1,
     "name": "Inputs",
-    "maps": [],
+    "maps": [
+        {
+            "name": "Game",
+            "id": "bba51917-7c7a-4aed-a3b9-4626ccf52da1",
+            "actions": [
+                {
+                    "name": "CellClick",
+                    "type": "Button",
+                    "id": "160e0260-d2de-4f0c-b3f6-f5b79924b555",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "PoinerPosition",
+                    "type": "Value",
+                    "id": "dc1d05b5-a823-42b1-8062-a6acc2f00707",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "7fbbbb14-6f25-4ed6-94e9-24ae036d3074",
+                    "path": "<Touchscreen>/primaryTouch/tap",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CellClick",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "fa0d0d25-056c-4d37-acc1-f3178eea169b",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CellClick",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "aec0638c-1559-45ca-8d16-b9ab48197d23",
+                    "path": "<Pointer>/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "PoinerPosition",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
     "controlSchemes": [
         {
             "name": "Keyboard&Mouse",

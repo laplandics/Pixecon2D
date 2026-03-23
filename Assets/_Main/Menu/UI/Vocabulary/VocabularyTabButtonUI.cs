@@ -85,7 +85,7 @@ namespace Menu
 
             entryUi.translationInput.onValueChanged.AddListener(text => entryDataProxy.Translation.Value = text);
             entryUi.wordInput.onValueChanged.AddListener(text => entryDataProxy.Word.Value = text);
-                
+            
             _vocabularyEntryUis.Add(entryUi);
         }
 
@@ -97,7 +97,8 @@ namespace Menu
 
         private void OnAddEntryButtonClicked()
         {
-            _vocabularyCreator.CreateNewVocabularyEntry(VocabularyProxy.Id, "", "");
+            _vocabularyCreator.CreateVocabularyEntry(VocabularyProxy.Id, "", "");
+            
             DestroyAddEntryUI();
             CreateAddEntryUI();
         }
