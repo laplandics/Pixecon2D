@@ -1,16 +1,15 @@
-﻿using Proxy;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace GameView
 {
     public class CellBinder : MonoBehaviour
     {
-        public CellDataProxy CellProxy;
+        public CellViewModel ViewModel { get; private set; }
         
         public void Bind(CellViewModel vm)
         {
+            ViewModel = vm;
             transform.position = vm.Position.CurrentValue;
-            CellProxy = vm.CellProxy;
         }
     }
 }

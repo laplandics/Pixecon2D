@@ -12,7 +12,7 @@ namespace Proxy
         public ReactiveProperty<bool> IsDone { get; }
         public ReactiveProperty<bool> IsCurrent { get; }
 
-        public ReactiveProperty<char> LastEnteredLetter { get; }
+        public ReactiveProperty<int> LastEnteredLetterIndex { get; }
         
         public VocabularyEntryDataProxy(Data.VocabularyEntryData origin)
         {
@@ -23,7 +23,7 @@ namespace Proxy
             Translation = new ReactiveProperty<string>(origin.translation);
             IsDone = new ReactiveProperty<bool>(origin.isDone);
             IsCurrent = new ReactiveProperty<bool>(origin.isCurrent);
-            LastEnteredLetter = new ReactiveProperty<char>();
+            LastEnteredLetterIndex = new ReactiveProperty<int>(-1);
             
             Word.Skip(1).Subscribe(word => origin.word = word);
             Translation.Skip(1).Subscribe(translation => origin.translation = translation);

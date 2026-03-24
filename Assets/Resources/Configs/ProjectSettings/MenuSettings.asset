@@ -19,9 +19,12 @@ MonoBehaviour:
     - key: Vocab
       title: "\u041F\u0435\u0440\u0432\u044B\u0439 \u0441\u043B\u043E\u0432\u0430\u0440\u044C"
       entries:
-      - word: One
-        translation: "\u041E\u0434\u0438\u043D"
+      - word: Beautiful
+        translation: "\u041A\u0440\u0430\u0441\u0438\u0432\u044B\u0439"
         isInitial: 1
-      - word: Two
-        translation: "\u0414\u0432\u0430"
+      - word: Smart
+        translation: "\u0423\u043C\u043D\u044B\u0439"
+        isInitial: 0
+      - word: Colorfull
+        translation: "\u0426\u0432\u0435\u0442\u043D\u043E\u0439"
         isInitial: 0

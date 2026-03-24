@@ -2,6 +2,8 @@ using System.Collections;
 using Cmd;
 using Core;
 using Data;
+using Game;
+using Menu;
 using R3;
 using ProjectSpace;
 using Settings;
@@ -44,7 +46,7 @@ public class Boot
         _rootDi.Resolve<Coroutines>().Start(LoadMenu(), out _);
     }
 
-    private IEnumerator LoadMenu(Menu.MenuEntryParams entryParams = null)
+    private IEnumerator LoadMenu(MenuEntryParams entryParams = null)
     {
         yield return new WaitForTask(_rootDi.Resolve<ISettingsProvider>().LoadSettingsAsync());
         
@@ -61,12 +63,14 @@ public class Boot
         yield return new WaitForSeconds(1f);
         _rootDi.Resolve<UI>().Clear();
         
-        var menu = new GameObject("Menu").AddComponent<Menu.MenuBoot>();
-        menu.Boot(_sceneDi, entryParams).Subscribe(menuExitParams => 
+        var menu = new GameObject("Menu").AddComponent<MenuBoot>();
+        menu.Boot(_sceneDi, entryParams, out var onExit);
+        
+        onExit.Subscribe(menuExitParams => 
             _rootDi.Resolve<Coroutines>().Start(LoadGame(menuExitParams.GameEntryParams), out _));
     }
 
-    private IEnumerator LoadGame(Game.GameEntryParams entryParams)
+    private IEnumerator LoadGame(GameEntryParams entryParams)
     {
         yield return new WaitForTask(_rootDi.Resolve<ISettingsProvider>().LoadSettingsAsync());
         
@@ -83,8 +87,12 @@ public class Boot
         yield return new WaitForSeconds(1f);
         _rootDi.Resolve<UI>().Clear();
         
-        var game = new GameObject("Game").AddComponent<Game.GameBoot>();
-        game.Boot(_sceneDi, entryParams).Subscribe(gameExitParams =>
+        var game = new GameObject("Game").AddComponent<GameBoot>();
+        game.Boot(_sceneDi, entryParams, out var onExit, out var onReplay);
+
+        onExit.Subscribe(gameExitParams =>
             _rootDi.Resolve<Coroutines>().Start(LoadMenu(gameExitParams.MenuEntryParams), out _));
+        onReplay.Subscribe(gameExitParams =>
+            _rootDi.Resolve<Coroutines>().Start(LoadGame(gameExitParams), out _));
     }
 }

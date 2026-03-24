@@ -84,7 +84,7 @@ namespace Menu
             entryUi.wordInput.text = entryDataProxy.Word.Value;
 
             entryUi.translationInput.onValueChanged.AddListener(text => entryDataProxy.Translation.Value = text);
-            entryUi.wordInput.onValueChanged.AddListener(text => entryDataProxy.Word.Value = text);
+            entryUi.wordInput.onValueChanged.AddListener(text => entryDataProxy.Word.Value = text.ToLower());
             
             _vocabularyEntryUis.Add(entryUi);
         }

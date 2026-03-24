@@ -4,6 +4,6 @@ public interface IRootUI
 {
     public RectTransform UITransform { get; }
     
-    public void OnAttached();
-    public void OnRemoved();
+    public void OnAttached(UIContainer container);
+    public void OnDetached();
 }

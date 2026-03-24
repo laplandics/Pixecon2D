@@ -31,7 +31,7 @@ namespace Data
                 _initialProjectData = JsonUtility.FromJson<ProjectData>(json);
                 ProjectData = new Proxy.ProjectDataProxy(_initialProjectData);
             }
-            
+
             return Observable.Return(ProjectData);
         }
 
@@ -41,10 +41,11 @@ namespace Data
             PlayerPrefs.SetString(Constant.Names.PlayerPrefs.PROJECT_DATA_KEY, json);
             return Observable.Return(true);
         }
-
-        public Observable<bool> ResetProjectData()
+        
+        public Observable<bool> ResetProjectData(bool fullReset)
         {
-            ProjectData = CreateNewProjectData();
+            if (fullReset) ProjectData = CreateNewProjectData();
+            else { LoadProjectData(_settingsProvider); }
             SaveProjectData();
             
             return Observable.Return(true);
@@ -64,7 +65,7 @@ namespace Data
                     {
                         entityID = projectDataProxy.GetGlobalEntityId,
                         isDone = false,
-                        word = initEntry.word,
+                        word = initEntry.word.ToLower(),
                         translation = initEntry.translation,
                         isCurrent = initEntry.isInitial
                     };

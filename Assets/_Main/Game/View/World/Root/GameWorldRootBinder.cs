@@ -27,16 +27,17 @@ namespace GameView
             var cellPrefab = Resources.Load<CellBinder>(Constant.Names.World.CELL_PREFAB);
             var createdCell = Instantiate(cellPrefab);
             createdCell.Bind(cellVm);
+            
             _createdCellsMap[cellVm.CellEntityId] = createdCell;
             cellVm.CellProxy.Letter.Subscribe(_ => UpdateCellSprite(createdCell));
         }
 
         private void UpdateCellSprite(CellBinder cellBinder)
         {
-            if(!char.IsLetter(cellBinder.CellProxy.Letter.Value)) return;
+            if(!char.IsLetter(cellBinder.ViewModel.CellProxy.Letter.Value)) return;
             
             var letterSprite = Resources.LoadAll<Sprite>(Constant.Names.World.LETTERS_ATLAS)
-                .FirstOrDefault(sprite => sprite.name == $"{cellBinder.CellProxy.Letter}");
+                .FirstOrDefault(sprite => sprite.name == $"{cellBinder.ViewModel.CellProxy.Letter}");
             if (letterSprite == null) return;
             
             var cellMesh = cellBinder.GetComponentInChildren<MeshFilter>();

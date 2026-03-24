@@ -9,7 +9,8 @@ namespace Menu
 {
     public class MenuBoot : MonoBehaviour
     {
-        public Observable<MenuExitParams> Boot(Core.DI menuDi, MenuEntryParams entryParams)
+        public void Boot(Core.DI menuDi, MenuEntryParams entryParams,
+            out Observable<MenuExitParams> exitObservable)
         {
             menuDi.Register(_ => new Cam("MenuCam"), true);
 
@@ -34,15 +35,13 @@ namespace Menu
             
             var gameEntryState = new Game.GameEntryParams();
             var exitState = new MenuExitParams(gameEntryState);
-            var exitSignal = playSignal.Select(_ => exitState);
-            exitSignal.Subscribe(_ =>
+            exitObservable = playSignal.Select(_ => exitState);
+            exitObservable.Subscribe(_ =>
             {
                 menuDi.Resolve<UI>().DetachUIRootBinder<MenuUIRootBinder>();
                 menuDi.Resolve<UI>().Clear();
                 menuDi.Resolve<IProjectDataProvider>().SaveProjectData();
             });
-            
-            return exitSignal;
         }
     }
 }

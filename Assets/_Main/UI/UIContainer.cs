@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-internal class UIContainer : MonoBehaviour
+public class UIContainer : MonoBehaviour
 {
     public Canvas canvas;
     public RectTransform[] layers;

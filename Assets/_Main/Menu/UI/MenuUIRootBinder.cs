@@ -22,7 +22,7 @@ namespace Menu
         private Subject<Unit> _playSignal;
         private Subject<string> _newPanelSignal;
 
-        public void OnAttached()
+        public void OnAttached(UIContainer container)
         {
             AssignButtons();
         }
@@ -64,7 +64,7 @@ namespace Menu
             OnPlayButtonClicked();
         }
         
-        public void OnRemoved()
+        public void OnDetached()
         {
             
         }

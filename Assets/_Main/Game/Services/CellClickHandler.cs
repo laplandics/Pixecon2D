@@ -1,23 +1,33 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 using Cmd;
 using GameView;
 using Proxy;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 using Utils;
 
 namespace Game
 {
     public class CellClickHandler : IDisposable
     {
+        private readonly PointerEventData _eventData;
+        private readonly GraphicRaycaster _raycaster;
+        private readonly ChosenLetterChecker _chosenLetterChecker;
+        private readonly CellBuilder _cellBuilder;
         private readonly Cam _cam;
-        private readonly ICommandProcessor _cmd;
         private readonly Inputs _inputs;
 
-        public CellClickHandler(GameInputHandler gameInputHandler, Cam cam, ICommandProcessor cmd)
+        public CellClickHandler(GameInputHandler gameInputHandler, Cam cam, GraphicRaycaster raycaster, 
+            EventSystem eventSystem, ChosenLetterChecker chosenLetterChecker, CellBuilder cellBuilder)
         {
             _cam = cam;
-            _cmd = cmd;
+            _raycaster = raycaster;
+            _chosenLetterChecker = chosenLetterChecker;
+            _cellBuilder = cellBuilder;
+            _eventData = new PointerEventData(eventSystem);
             _inputs = gameInputHandler.Inputs;
             _inputs.Game.CellClick.Enable();
             _inputs.Game.PoinerPosition.Enable();
@@ -27,16 +37,23 @@ namespace Game
         private void OnCellClickPerformed(InputAction.CallbackContext ctx)
         {
             var screenPos = _inputs.Game.PoinerPosition.ReadValue<Vector2>();
+            var results = new List<RaycastResult>();
+            _eventData.position = screenPos;
+            _raycaster.Raycast(_eventData, results);
+            if (results.Count > 0) return;
+            
             var worldPos = _cam.Get.ScreenToWorldPoint(screenPos);
             var ray = new Ray(worldPos, _cam.Get.transform.forward);
             if (!Physics.Raycast(ray, out var hit)) return;
             if (!hit.collider.gameObject.TryGetComponent<CellBinder>(out var cell)) return;
-            HandleClick(cell.CellProxy);
+            HandleClick(cell.ViewModel);
         }
 
-        private void HandleClick(CellDataProxy cellProxy)
+        private void HandleClick(CellViewModel cellViewModel)
         {
-            _cmd.Process(new CmdHandleCellClick(cellProxy));
+            if (!_chosenLetterChecker.CheckLetter(cellViewModel))
+            {Debug.Log("Letter is not correct");}
+            _cellBuilder.RemoveCell(cellViewModel.CellProxy);
         }
 
         public void Dispose()

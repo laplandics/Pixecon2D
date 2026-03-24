@@ -20,6 +20,8 @@
             public const string PREFERENCES_INFO_PANEL = "Prefabs/UI/Menu/Preferences/PreferencesInfoPanel";
             public const string PLAY_INFO_PANEL = "Prefabs/UI/Menu/Play/PlayInfoPanel";
             public const string ABOUT_INFO_PANEL = "Prefabs/UI/Menu/About/AboutInfoPanel";
+
+            public const string GAME_NO_VOCABULARIES_POPUP = "Prefabs/UI/Game/Popups/NoVocabularies";
         }
 
         public static class World

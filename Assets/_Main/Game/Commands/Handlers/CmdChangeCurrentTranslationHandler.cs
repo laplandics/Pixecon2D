@@ -1,6 +1,7 @@
 ﻿using Cmd;
 using ObservableCollections;
 using Proxy;
+using UnityEngine;
 
 namespace Game
 {
@@ -33,6 +34,7 @@ namespace Game
                 vocabulary.IsCompleted.Value = true;
             }
             
+            Debug.LogWarning("No vocabulary found");
             return false;
         }
     }

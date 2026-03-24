@@ -1,4 +1,5 @@
 ﻿using ObservableCollections;
+using Proxy;
 using R3;
 using UnityEngine;
 
@@ -10,22 +11,25 @@ namespace Game
         private readonly CellBuilder _builder;
         private readonly CellLetterSetter _setter;
         private readonly CellClickHandler _clickHandler;
-        private readonly ChosenLetterHandler _chosenLetterHandler;
+        private readonly ChosenLetterChecker _chosenLetterChecker;
 
+        private VocabularyEntryDataProxy _currentEntry;
+        
         public GameField
         (
             GameGrid grid,
             CellBuilder builder,
             CellLetterSetter setter,
             CellClickHandler clickHandler,
-            ChosenLetterHandler chosenLetterHandler
-        )
+            ChosenLetterChecker chosenLetterChecker,
+            IObservableCollection<VocabularyDataProxy> vocabularies)
         {
             _grid = grid;
             _builder = builder;
             _setter = setter;
             _clickHandler = clickHandler;
-            _chosenLetterHandler = chosenLetterHandler;
+            _chosenLetterChecker = chosenLetterChecker;
+            
             _builder.AllCells.ObserveRemove().Subscribe(removeEvent =>
             { UpdateField(removeEvent.Value.Position.CurrentValue); });
         }
@@ -33,10 +37,7 @@ namespace Game
         public void CreateField()
         {
             foreach (var gridPosition in _grid.GridPositions)
-            {
-                var worldPos = _grid.GridToWorld(gridPosition);
-                _builder.AddCell(worldPos);
-            }
+            { var worldPos = _grid.GridToWorld(gridPosition); _builder.AddCell(worldPos); }
         }
 
         private void UpdateField(Vector2 position)

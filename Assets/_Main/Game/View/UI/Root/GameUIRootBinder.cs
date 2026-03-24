@@ -1,4 +1,5 @@
-﻿using Game;
+﻿using System.Collections.Generic;
+using ObservableCollections;
 using R3;
 using TMPro;
 using UnityEngine;
@@ -16,23 +17,28 @@ namespace GameView
         [Header("Prefabs")]
         public GameObject wordLetterPrefab;
         
+        private readonly Dictionary<string, IPopup> _createdPopupsMap = new();
+        private UIContainer _uiContainer;
         private readonly CompositeDisposable _disposables = new();
-        private GameFinisher _gameFinisher;
+        private GameUIRootViewModel _vm;
         
         public void Bind(GameUIRootViewModel vm)
         {
-            _gameFinisher = vm.Finisher;
-
+            _vm = vm;
             foreach (var entryDataProxy in vm.VocabularyEntries)
             {
                 _disposables.Add(entryDataProxy.IsCurrent.Subscribe(isCurrent =>
                     { if (isCurrent) ChangeTranslation(entryDataProxy.Translation.Value); } ));
-                _disposables.Add(entryDataProxy.LastEnteredLetter.Skip(1).Subscribe(AddWordLetter));
+                _disposables.Add(entryDataProxy.LastEnteredLetterIndex.Skip(1).Subscribe(index
+                    => AddWordLetter(entryDataProxy.Word.Value[index])));
             }
+            _disposables.Add(_vm.AllPopups.ObserveAdd().Subscribe(addEvent => ShowPopup(addEvent.Value)));
+            _disposables.Add(_vm.AllPopups.ObserveRemove().Subscribe(removeEvent => HidePopup(removeEvent.Value)));
         }
 
-        public void OnAttached()
+        public void OnAttached(UIContainer container)
         {
+            _uiContainer = container;
             AssignButtons();
         }
 
@@ -43,7 +49,7 @@ namespace GameView
         
         private void OnPauseButtonClicked()
         {
-            _gameFinisher.FinishGame();
+            _vm.CycleHandler.FinishGame();
         }
 
         private void ChangeTranslation(string translation)
@@ -63,8 +69,26 @@ namespace GameView
             for (var child = 0; child < wordLettersContainer.transform.childCount; child++)
             { Destroy(wordLettersContainer.transform.GetChild(child).gameObject); }
         }
+
+        private void ShowPopup(PopupViewModel popupViewModel)
+        {
+            var popupPath = popupViewModel.PopupPath;
+            var popupPrefab = Resources.Load<GameObject>(popupPath);
+            var popupObject = Instantiate(popupPrefab, _uiContainer.layers[0].transform, false);
+            var popup = popupObject.GetComponent<IPopup>();
+            popup.Bind(popupViewModel);
+            popup.OnShow();
+            _createdPopupsMap.Add(popupPath, popup);
+        }
+
+        private void HidePopup(PopupViewModel popupViewModel)
+        {
+            if (!_createdPopupsMap.Remove(popupViewModel.PopupPath, out var popup)) return;
+            popup.OnHide();
+            Destroy(popup.PopupTransform.gameObject);
+        }
         
-        public void OnRemoved() { _disposables.Dispose(); }
+        public void OnDetached() { _disposables.Dispose(); }
 
         public RectTransform UITransform => gameObject.GetComponent<RectTransform>();
     }

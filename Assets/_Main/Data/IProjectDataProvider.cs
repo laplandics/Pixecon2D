@@ -7,5 +7,5 @@ public interface IProjectDataProvider
 
     public Observable<Proxy.ProjectDataProxy> LoadProjectData( ISettingsProvider settingsProvider );
     public Observable<bool> SaveProjectData();
-    public Observable<bool> ResetProjectData();
+    public Observable<bool> ResetProjectData(bool fullReset);
 }
