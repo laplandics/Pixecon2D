@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Cmd;
 using GameView;
-using Proxy;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -29,11 +27,16 @@ namespace Game
             _cellBuilder = cellBuilder;
             _eventData = new PointerEventData(eventSystem);
             _inputs = gameInputHandler.Inputs;
+            EnableCellClicks();
+        }
+
+        private void EnableCellClicks()
+        {
             _inputs.Game.CellClick.Enable();
             _inputs.Game.PoinerPosition.Enable();
             _inputs.Game.CellClick.performed += OnCellClickPerformed;
         }
-
+        
         private void OnCellClickPerformed(InputAction.CallbackContext ctx)
         {
             var screenPos = _inputs.Game.PoinerPosition.ReadValue<Vector2>();
@@ -51,16 +54,17 @@ namespace Game
 
         private void HandleClick(CellViewModel cellViewModel)
         {
-            if (!_chosenLetterChecker.CheckLetter(cellViewModel))
-            {Debug.Log("Letter is not correct");}
+            if (!_chosenLetterChecker.CheckLetter(cellViewModel)) {}
             _cellBuilder.RemoveCell(cellViewModel.CellProxy);
         }
 
-        public void Dispose()
+        private void DisableCellClicks()
         {
             _inputs.Game.CellClick.Disable();
             _inputs.Game.PoinerPosition.Disable();
             _inputs.Game.CellClick.performed -= OnCellClickPerformed;
         }
+        
+        public void Dispose() => DisableCellClicks();
     }
 }

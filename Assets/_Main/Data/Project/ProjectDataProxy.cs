@@ -6,14 +6,16 @@ namespace Proxy
 {
     public class ProjectDataProxy
     {
-        public Data.ProjectData Origin { get; }
+        private Data.ProjectData Origin { get; }
         public int GetGlobalEntityId => Origin.globalEntityId++;
+        
         public ObservableList<VocabularyDataProxy> Vocabularies { get; } = new();
         public ObservableList<CellDataProxy> Cells { get; } = new();
         
         public ProjectDataProxy(Data.ProjectData origin)
         {
             Origin = origin;
+            
             origin.vocabularies.ForEach(vocabularyData =>
                 Vocabularies.Add(new VocabularyDataProxy(vocabularyData)));
             SubscribeToVocabulariesChange();

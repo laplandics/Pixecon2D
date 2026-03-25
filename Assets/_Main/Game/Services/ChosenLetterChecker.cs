@@ -1,34 +1,30 @@
-﻿using Cmd;
-using GameView;
-using ObservableCollections;
-using Proxy;
+﻿using GameView;
 using R3;
 
 namespace Game
 {
     public class ChosenLetterChecker
     {
-        private readonly ICommandProcessor _cmd;
-
-        public ChosenLetterChecker(ObservableList<VocabularyDataProxy> vocabulariesProxy, ICommandProcessor cmd)
+        private readonly CurrentVocabularyHandler _currentVocabularyHandler;
+        private int _currentEnteredWordLetterIndex;
+        
+        public ChosenLetterChecker(CurrentVocabularyHandler currentVocabularyHandler)
         {
-            _cmd = cmd;
-            foreach (var vocabularyDataProxy in vocabulariesProxy)
-            {
-                foreach (var entryDataProxy in vocabularyDataProxy.VocabularyEntries)
-                { entryDataProxy.IsCurrent.Subscribe(current =>
-                    { if (current) UpdateCurrentEntry(entryDataProxy); }); }
-            }
+            _currentVocabularyHandler = currentVocabularyHandler;
+            _currentVocabularyHandler.CurrentVocabularyEntry.Subscribe(_ => _currentEnteredWordLetterIndex = 0);
         }
-
-        private void UpdateCurrentEntry(VocabularyEntryDataProxy newEntryDataProxy)
-        {
-            _cmd.RegisterHandler(new CmdCheckLetterHandler(newEntryDataProxy));
-        }
-
+        
         public bool CheckLetter(CellViewModel checkingCell)
         {
-            return _cmd.Process(new CmdCheckLetter(checkingCell));
+            var letter = checkingCell.Letter.CurrentValue;
+            var currentEntry = _currentVocabularyHandler.CurrentVocabularyEntry.Value;
+            var currentWord = currentEntry.Word.Value;
+            
+            if (currentWord[_currentEnteredWordLetterIndex] != letter) return false;
+            if (!_currentVocabularyHandler.ChangeLastCorrectLetter(_currentEnteredWordLetterIndex)) return true;
+            
+            _currentEnteredWordLetterIndex++;
+            return true;
         }
     }
 }

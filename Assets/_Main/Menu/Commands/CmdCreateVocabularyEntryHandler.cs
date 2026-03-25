@@ -15,7 +15,6 @@ namespace Menu
             var newEntryData = new Data.VocabularyEntryData
             {
                 entityID = _pdp.GetGlobalEntityId,
-                isDone = command.IsDone,
                 translation = command.Translation,
                 word = command.Word
             };

@@ -21,10 +21,9 @@ MonoBehaviour:
       entries:
       - word: Beautiful
         translation: "\u041A\u0440\u0430\u0441\u0438\u0432\u044B\u0439"
-        isInitial: 1
-      - word: Smart
-        translation: "\u0423\u043C\u043D\u044B\u0439"
-        isInitial: 0
-      - word: Colorfull
-        translation: "\u0426\u0432\u0435\u0442\u043D\u043E\u0439"
-        isInitial: 0
+      - word: Straightforward
+        translation: "\u041F\u0440\u044F\u043C\u043E\u0439"
+      - word: Regular
+        translation: "\u041E\u0431\u044B\u0447\u043D\u044B\u0439"
+      - word: Kiss
+        translation: "\u041F\u043E\u0446\u0435\u043B\u0443\u0439"

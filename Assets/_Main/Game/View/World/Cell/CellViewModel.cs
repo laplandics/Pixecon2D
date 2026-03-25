@@ -1,5 +1,4 @@
-﻿using Game;
-using Proxy;
+﻿using Proxy;
 using R3;
 using UnityEngine;
 

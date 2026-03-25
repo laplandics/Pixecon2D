@@ -1,4 +1,5 @@
-﻿using ObservableCollections;
+﻿using System.Linq;
+using ObservableCollections;
 using Proxy;
 using R3;
 using UnityEngine;
@@ -9,40 +10,42 @@ namespace Game
     {
         private readonly GameGrid _grid;
         private readonly CellBuilder _builder;
-        private readonly CellLetterSetter _setter;
+        private readonly CellLetterSetter _letterSetter;
         private readonly CellClickHandler _clickHandler;
-        private readonly ChosenLetterChecker _chosenLetterChecker;
+        private readonly CurrentVocabularyHandler _currentVocabularyHandler;
 
         private VocabularyEntryDataProxy _currentEntry;
         
-        public GameField
-        (
-            GameGrid grid,
-            CellBuilder builder,
-            CellLetterSetter setter,
-            CellClickHandler clickHandler,
-            ChosenLetterChecker chosenLetterChecker,
-            IObservableCollection<VocabularyDataProxy> vocabularies)
+        public GameField(GameGrid grid, CellBuilder builder, CellLetterSetter letterSetter,
+            CellClickHandler clickHandler, CurrentVocabularyHandler currentVocabularyHandler)
         {
             _grid = grid;
             _builder = builder;
-            _setter = setter;
+            _letterSetter = letterSetter;
             _clickHandler = clickHandler;
-            _chosenLetterChecker = chosenLetterChecker;
+            _currentVocabularyHandler = currentVocabularyHandler;
             
-            _builder.AllCells.ObserveRemove().Subscribe(removeEvent =>
-            { UpdateField(removeEvent.Value.Position.CurrentValue); });
+            _builder.AllCells.ObserveRemove().Subscribe(cell => SetCell(cell.Value.Position.CurrentValue));
+            
+            _currentVocabularyHandler.CurrentVocabularyEntry.Skip(1).Subscribe(_ => ClearField());
         }
 
         public void CreateField()
         {
-            foreach (var gridPosition in _grid.GridPositions)
-            { var worldPos = _grid.GridToWorld(gridPosition); _builder.AddCell(worldPos); }
+            var shufflePositions = _grid.GridPositions.OrderBy(_ => Random.value).ToList();
+            foreach (var gridPosition in shufflePositions)
+            { SetCell(_grid.GridToWorld(gridPosition)); }
         }
 
-        private void UpdateField(Vector2 position)
+        private void ClearField()
         {
-            _builder.AddCell(position);
+            for (var i = _builder.AllCells.Count - 1; i >= 0; i--)
+            { _builder.RemoveCell(_builder.AllCells.ElementAt(i).CellProxy); }
+        }
+        
+        private void SetCell(Vector2 worldPos)
+        {
+            _builder.AddCell(worldPos);
         }
     }
 }

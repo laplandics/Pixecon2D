@@ -7,30 +7,25 @@ namespace Game
 {
     public class CellLetterSetter
     {
+        private readonly CurrentVocabularyHandler _currentVocabularyHandler;
         private readonly ICommandProcessor _cmd;
-        private VocabularyEntryDataProxy _currentEntry;
+        
+        private CompositeDisposable _disposables = new();
 
-        public CellLetterSetter(IObservableCollection<CellDataProxy> cells,
-            IObservableCollection<VocabularyDataProxy> vocabularies, ICommandProcessor cmd)
+        public CellLetterSetter(CurrentVocabularyHandler currentVocabularyHandler,
+            IObservableCollection<CellDataProxy> cells, ICommandProcessor cmd)
         {
+            _currentVocabularyHandler = currentVocabularyHandler;
             _cmd = cmd;
-
-            foreach (var vocabulary in vocabularies)
-            {
-                foreach (var vocabularyEntry in vocabulary.VocabularyEntries)
-                { vocabularyEntry.IsCurrent.Subscribe(current 
-                    => { if (current) { _currentEntry = vocabularyEntry; } }); }
-            }
             
-            foreach (var cellProxy in cells) { SetLetter(cellProxy); }
-            cells.ObserveAdd().Subscribe(addEvent => { SetLetter(addEvent.Value); });
+            _disposables.Add(cells.ObserveAdd().Subscribe(addEvent => SetCellLetter(addEvent.Value)));
         }
 
-        private bool SetLetter(CellDataProxy cellProxy)
+        private bool SetCellLetter(CellDataProxy cell)
         {
-            var setLetterCommand = new CmdSetCellLetter(cellProxy, _currentEntry);
-            var result = _cmd.Process(setLetterCommand);
-            
+            var word = _currentVocabularyHandler.CurrentVocabularyEntry.Value.Word.Value;
+            var command = new CmdSetCellLetter(cell, word);
+            var result = _cmd.Process(command);
             return result;
         }
     }

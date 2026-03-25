@@ -18,7 +18,8 @@ namespace Game
             {
                 entityID = _pdp.GetGlobalEntityId,
                 key = Constant.Names.EntityData.CELL_EMPTY_KEY,
-                position = command.Position
+                position = command.Position,
+                letter = '\0'
             };
             var newCellProxy = new CellDataProxy(newCellData);
             _pdp.Cells.Add(newCellProxy);

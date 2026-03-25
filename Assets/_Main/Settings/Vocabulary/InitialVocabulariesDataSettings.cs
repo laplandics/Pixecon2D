@@ -20,7 +20,6 @@ namespace Settings
         {
             public string word;
             public string translation;
-            public bool isInitial;
         }
     }
 }

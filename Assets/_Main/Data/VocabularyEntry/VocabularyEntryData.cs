@@ -7,7 +7,6 @@ namespace Data
     {
         public string word;
         public string translation;
-        public bool isDone;
-        public bool isCurrent;
+        public bool isCompleted;
     }
 }

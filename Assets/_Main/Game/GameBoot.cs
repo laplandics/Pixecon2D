@@ -40,39 +40,31 @@ namespace Game
             
             gameDi.Resolve<ICommandProcessor>().RegisterHandler(new CmdCreateCellHandler(
                 gameDi.Resolve<IProjectDataProvider>().ProjectData));
-            gameDi.Resolve<ICommandProcessor>().RegisterHandler(new CmdSetCellLetterHandler(
-                gameDi.Resolve<ISettingsProvider>().MenuSettings.vocabulariesSettings));
-            gameDi.Resolve<ICommandProcessor>().RegisterHandler(new CmdChangeCurrentTranslationHandler(
-                gameDi.Resolve<IProjectDataProvider>().ProjectData.Vocabularies));
             gameDi.Resolve<ICommandProcessor>().RegisterHandler(new CmdDestroyCellHandler(
                 gameDi.Resolve<IProjectDataProvider>().ProjectData));
+            gameDi.Resolve<ICommandProcessor>().RegisterHandler(new CmdChangeCurrentEntryHandler());
+            gameDi.Resolve<ICommandProcessor>().RegisterHandler(new CmdChangeCurrentVocabularyHandler(
+                gameDi.Resolve<IProjectDataProvider>().ProjectData.Vocabularies));
+            gameDi.Resolve<ICommandProcessor>().RegisterHandler(new CmdSetCellLetterHandler(
+                gameDi.Resolve<ISettingsProvider>().MenuSettings.vocabulariesSettings));
             
+            gameDi.Register(_ => new CurrentVocabularyHandler(
+                gameDi.Resolve<IProjectDataProvider>().ProjectData.Vocabularies,
+                gameDi.Resolve<ICommandProcessor>()), true);
             gameDi.Register(_ => new GameInputHandler(new Inputs()), true);
             gameDi.Register(_ => new CellBuilder(
                 gameDi.Resolve<IProjectDataProvider>().ProjectData.Cells,
                 gameDi.Resolve<ICommandProcessor>()), true);
             gameDi.Register(_ => new CellLetterSetter(
+                gameDi.Resolve<CurrentVocabularyHandler>(),
                 gameDi.Resolve<IProjectDataProvider>().ProjectData.Cells,
-                gameDi.Resolve<IProjectDataProvider>().ProjectData.Vocabularies,
                 gameDi.Resolve<ICommandProcessor>()), true);
             gameDi.Register(_ => new GameGrid(gameDi.Resolve<Cam>()), true);
-            gameDi.Register(_ => new TranslationChanger(
-                gameDi.Resolve<ICommandProcessor>(),
-                gameDi.Resolve<IProjectDataProvider>().ProjectData.Vocabularies,
-                gameDi.Resolve<GamePopupHandler>()), true);
             gameDi.Register(_ => new ChosenLetterChecker(
-                gameDi.Resolve<IProjectDataProvider>().ProjectData.Vocabularies,
-                gameDi.Resolve<ICommandProcessor>()), true);
+                gameDi.Resolve<CurrentVocabularyHandler>()), true);
             gameDi.Register(_ => new GameCycleHandler(
                 exitSignalSubject,
                 replaySignalSubject), true);
-            gameDi.Register(_ => new GameField(
-                gameDi.Resolve<GameGrid>(),
-                gameDi.Resolve<CellBuilder>(),
-                gameDi.Resolve<CellLetterSetter>(),
-                gameDi.Resolve<CellClickHandler>(),
-                gameDi.Resolve<ChosenLetterChecker>(),
-                gameDi.Resolve<IProjectDataProvider>().ProjectData.Vocabularies), true);
             gameDi.Register(_ => new GamePopupHandler(
                 gameDi.Resolve<GameCycleHandler>(), 
                 gameDi.Resolve<IProjectDataProvider>().ProjectData.Vocabularies), true);
@@ -83,12 +75,18 @@ namespace Game
                 gameDi.Resolve<UI>().GetEventSystem,
                 gameDi.Resolve<ChosenLetterChecker>(),
                 gameDi.Resolve<CellBuilder>()), true);
+            gameDi.Register(_ => new GameField(
+                gameDi.Resolve<GameGrid>(),
+                gameDi.Resolve<CellBuilder>(),
+                gameDi.Resolve<CellLetterSetter>(),
+                gameDi.Resolve<CellClickHandler>(),
+                gameDi.Resolve<CurrentVocabularyHandler>()), true);
             
             gameDi.Register(_ => new GameWorldRootViewModel(gameDi.Resolve<CellBuilder>()), true);
             gameDi.Register(_ => new GameUIRootViewModel(
                 gameDi.Resolve<GameCycleHandler>(),
-                gameDi.Resolve<TranslationChanger>(),
-                gameDi.Resolve<GamePopupHandler>()), true);
+                gameDi.Resolve<GamePopupHandler>(),
+                gameDi.Resolve<CurrentVocabularyHandler>()), true);
             
             
             //Essentials

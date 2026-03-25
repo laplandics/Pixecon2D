@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using ObservableCollections;
 using R3;
@@ -27,15 +28,13 @@ namespace GameView
             var cellPrefab = Resources.Load<CellBinder>(Constant.Names.World.CELL_PREFAB);
             var createdCell = Instantiate(cellPrefab);
             createdCell.Bind(cellVm);
-            
+            createdCell.ViewModel.CellProxy.Letter.Subscribe(letter =>
+            { if (!char.IsLetter(letter)) return; UpdateCellSprite(createdCell); });
             _createdCellsMap[cellVm.CellEntityId] = createdCell;
-            cellVm.CellProxy.Letter.Subscribe(_ => UpdateCellSprite(createdCell));
         }
 
         private void UpdateCellSprite(CellBinder cellBinder)
         {
-            if(!char.IsLetter(cellBinder.ViewModel.CellProxy.Letter.Value)) return;
-            
             var letterSprite = Resources.LoadAll<Sprite>(Constant.Names.World.LETTERS_ATLAS)
                 .FirstOrDefault(sprite => sprite.name == $"{cellBinder.ViewModel.CellProxy.Letter}");
             if (letterSprite == null) return;

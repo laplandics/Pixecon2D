@@ -25,13 +25,10 @@ namespace GameView
         public void Bind(GameUIRootViewModel vm)
         {
             _vm = vm;
-            foreach (var entryDataProxy in vm.VocabularyEntries)
-            {
-                _disposables.Add(entryDataProxy.IsCurrent.Subscribe(isCurrent =>
-                    { if (isCurrent) ChangeTranslation(entryDataProxy.Translation.Value); } ));
-                _disposables.Add(entryDataProxy.LastEnteredLetterIndex.Skip(1).Subscribe(index
-                    => AddWordLetter(entryDataProxy.Word.Value[index])));
-            }
+            
+            _disposables.Add(_vm.VocabularyHandler.CurrentVocabularyEntry.Subscribe(newEntry =>
+                {ChangeTranslation(newEntry.Translation.Value);}));
+            _disposables.Add(_vm.VocabularyHandler.LastCorrectLetter.Skip(1).Subscribe(AddWordLetter));
             _disposables.Add(_vm.AllPopups.ObserveAdd().Subscribe(addEvent => ShowPopup(addEvent.Value)));
             _disposables.Add(_vm.AllPopups.ObserveRemove().Subscribe(removeEvent => HidePopup(removeEvent.Value)));
         }

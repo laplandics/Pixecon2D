@@ -5,13 +5,13 @@ namespace Game
 {
     public class CmdSetCellLetter : ICommand
     {
-        public readonly VocabularyEntryDataProxy CurrentEntry;
-        public readonly CellDataProxy CellProxy;
+        public readonly string CurrentWord;
+        public readonly CellDataProxy Cell;
 
-        public CmdSetCellLetter(CellDataProxy cellProxy, VocabularyEntryDataProxy currentEntry)
+        public CmdSetCellLetter(CellDataProxy cell, string currentWord)
         {
-            CurrentEntry = currentEntry;
-            CellProxy = cellProxy;
+            CurrentWord = currentWord;
+            Cell = cell;
         }
     }
 }

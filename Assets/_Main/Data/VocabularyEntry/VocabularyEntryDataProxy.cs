@@ -9,10 +9,7 @@ namespace Proxy
         
         public ReactiveProperty<string> Word { get; }
         public ReactiveProperty<string> Translation { get; }
-        public ReactiveProperty<bool> IsDone { get; }
-        public ReactiveProperty<bool> IsCurrent { get; }
-
-        public ReactiveProperty<int> LastEnteredLetterIndex { get; }
+        public ReactiveProperty<bool> IsCompleted { get; }
         
         public VocabularyEntryDataProxy(Data.VocabularyEntryData origin)
         {
@@ -21,14 +18,10 @@ namespace Proxy
             
             Word = new ReactiveProperty<string>(origin.word);
             Translation = new ReactiveProperty<string>(origin.translation);
-            IsDone = new ReactiveProperty<bool>(origin.isDone);
-            IsCurrent = new ReactiveProperty<bool>(origin.isCurrent);
-            LastEnteredLetterIndex = new ReactiveProperty<int>(-1);
+            IsCompleted = new ReactiveProperty<bool>(origin.isCompleted);
             
             Word.Skip(1).Subscribe(word => origin.word = word);
             Translation.Skip(1).Subscribe(translation => origin.translation = translation);
-            IsDone.Skip(1).Subscribe(isDone => origin.isDone = isDone);
-            IsCurrent.Skip(1).Subscribe(isCurrent => origin.isCurrent = isCurrent);
         }
     }
 }

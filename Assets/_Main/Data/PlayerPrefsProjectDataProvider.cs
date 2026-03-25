@@ -64,10 +64,9 @@ namespace Data
                     var initialVocabularyEntry = new VocabularyEntryData
                     {
                         entityID = projectDataProxy.GetGlobalEntityId,
-                        isDone = false,
                         word = initEntry.word.ToLower(),
                         translation = initEntry.translation,
-                        isCurrent = initEntry.isInitial
+                        isCompleted = false,
                     };
                     initialVocabularyEntries.Add(initialVocabularyEntry);
                 }
