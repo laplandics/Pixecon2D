@@ -43,7 +43,7 @@ namespace Menu
             var newPanel = newPanelObj.GetComponent<IMenuUiInfoPanel>();
             _menuUIRootBinder.scrollRect.content = newPanelObj.GetComponent<RectTransform>();
             _currentPanel = newPanel;
-            newPanel.LoadElements(_vocabCreator, _uiSignals);
+            newPanel.LoadElements(_vocabCreator, _uiSignals, _menuUIRootBinder.scrollRect);
         }
     }
 }

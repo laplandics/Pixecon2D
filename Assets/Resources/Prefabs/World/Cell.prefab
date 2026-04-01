@@ -136,6 +136,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 918f742059934d3ba8eb10b99d734d6a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameView.CellBinder
+  mf: {fileID: 8593136058445667213}
+  cldr: {fileID: 8746586591217591890}
 --- !u!65 &8746586591217591890
 BoxCollider:
   m_ObjectHideFlags: 0

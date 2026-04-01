@@ -54,7 +54,8 @@ namespace Game
             gameDi.Register(_ => new GameInputHandler(new Inputs()), true);
             gameDi.Register(_ => new CellBuilder(
                 gameDi.Resolve<IProjectDataProvider>().ProjectData.Cells,
-                gameDi.Resolve<ICommandProcessor>()), true);
+                gameDi.Resolve<ICommandProcessor>(),
+                gameDi.Resolve<ISettingsProvider>().GameSettings.cellsSettings), true);
             gameDi.Register(_ => new CellLetterSetter(
                 gameDi.Resolve<CurrentVocabularyHandler>(),
                 gameDi.Resolve<IProjectDataProvider>().ProjectData.Cells,
@@ -81,8 +82,11 @@ namespace Game
                 gameDi.Resolve<CellLetterSetter>(),
                 gameDi.Resolve<CellClickHandler>(),
                 gameDi.Resolve<CurrentVocabularyHandler>()), true);
+            gameDi.Register(_ => new ObjectSpawner());
             
-            gameDi.Register(_ => new GameWorldRootViewModel(gameDi.Resolve<CellBuilder>()), true);
+            gameDi.Register(_ => new GameWorldRootViewModel(
+                gameDi.Resolve<CellBuilder>(),
+                gameDi.Resolve<ObjectSpawner>()), true);
             gameDi.Register(_ => new GameUIRootViewModel(
                 gameDi.Resolve<GameCycleHandler>(),
                 gameDi.Resolve<GamePopupHandler>(),

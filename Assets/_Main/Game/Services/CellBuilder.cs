@@ -4,6 +4,7 @@ using GameView;
 using ObservableCollections;
 using Proxy;
 using R3;
+using Settings;
 using UnityEngine;
 
 namespace Game
@@ -11,14 +12,16 @@ namespace Game
     public class CellBuilder
     {
         private readonly ICommandProcessor _cmd;
+        private readonly CellsSettings _settings;
         private readonly Dictionary<int, CellViewModel> _cellsMap = new();
         
         private readonly ObservableList<CellViewModel> _allCells = new();
         public IObservableCollection<CellViewModel> AllCells => _allCells;
         
-        public CellBuilder(IObservableCollection<CellDataProxy> cells, ICommandProcessor cmd)
+        public CellBuilder(IObservableCollection<CellDataProxy> cells, ICommandProcessor cmd, CellsSettings settings)
         {
             _cmd = cmd;
+            _settings = settings;
 
             foreach (var cellProxy in cells)
             { CreateCellViewModel(cellProxy); }
@@ -45,7 +48,7 @@ namespace Game
 
         private void CreateCellViewModel(CellDataProxy proxy)
         {
-            var view = new CellViewModel(proxy);
+            var view = new CellViewModel(proxy, _settings);
             _allCells.Add(view);
             _cellsMap[proxy.Id] = view;
         }

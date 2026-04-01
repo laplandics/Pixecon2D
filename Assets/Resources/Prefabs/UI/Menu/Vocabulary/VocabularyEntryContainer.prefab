@@ -336,8 +336,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\u200B"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: e921572d08516c64b8b360c126ab8d46, type: 2}
+  m_sharedMaterial: {fileID: -4524623336135740865, guid: e921572d08516c64b8b360c126ab8d46, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -474,8 +474,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Your word in English
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: e921572d08516c64b8b360c126ab8d46, type: 2}
+  m_sharedMaterial: {fileID: -4524623336135740865, guid: e921572d08516c64b8b360c126ab8d46, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -564,6 +564,37 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!1 &4305707657792896462
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4694611843990126307}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4694611843990126307
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4305707657792896462}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 7.140442, y: 40.82019, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7824949139267494374}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4439544040394583068
 GameObject:
   m_ObjectHideFlags: 0
@@ -667,8 +698,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\u200B"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: e921572d08516c64b8b360c126ab8d46, type: 2}
+  m_sharedMaterial: {fileID: -4524623336135740865, guid: e921572d08516c64b8b360c126ab8d46, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -859,6 +890,7 @@ RectTransform:
   - {fileID: 1119401751006360642}
   - {fileID: 8399518484228972452}
   - {fileID: 7213892327039667845}
+  - {fileID: 4694611843990126307}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -904,8 +936,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7232557221386094eb9d8a3d63259eb5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  translationInput: {fileID: 8969220073374186870}
-  wordInput: {fileID: 2064016316642614940}
+  translationInput: {fileID: 1784783366318542110}
+  wordInput: {fileID: 893012415651940563}
 --- !u!1 &7004948262214118669
 GameObject:
   m_ObjectHideFlags: 0
@@ -974,8 +1006,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\u0412\u0430\u0448\u0435 \u0441\u043B\u043E\u0432\u043E \u043D\u0430 \u0440\u0443\u0441\u0441\u043A\u043E\u043C"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: e921572d08516c64b8b360c126ab8d46, type: 2}
+  m_sharedMaterial: {fileID: -4524623336135740865, guid: e921572d08516c64b8b360c126ab8d46, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1075,7 +1107,7 @@ GameObject:
   - component: {fileID: 3945277595114721215}
   - component: {fileID: 7334835671283908755}
   - component: {fileID: 4123341251945353146}
-  - component: {fileID: 8969220073374186870}
+  - component: {fileID: 1784783366318542110}
   m_Layer: 5
   m_Name: EntryTranslationInput
   m_TagString: Untagged
@@ -1141,7 +1173,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &8969220073374186870
+--- !u!114 &1784783366318542110
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1150,9 +1182,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 7747859893787729281}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2da0c512f12947e489f739169773d7ca, type: 3}
+  m_Script: {fileID: 11500000, guid: 30719fa38db54762ac43b2c0cfa5a00b, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TMP_InputField
+  m_EditorClassIdentifier: Assembly-CSharp::Tools.DragInputField
   m_Navigation:
     m_Mode: 0
     m_WrapAround: 0
@@ -1199,7 +1231,7 @@ MonoBehaviour:
   m_CharacterValidation: 0
   m_RegexValue: 
   m_GlobalPointSize: 14
-  m_CharacterLimit: 28
+  m_CharacterLimit: 0
   m_OnEndEdit:
     m_PersistentCalls:
       m_Calls: []
@@ -1232,7 +1264,7 @@ MonoBehaviour:
   m_CaretWidth: 1
   m_ReadOnly: 0
   m_RichText: 1
-  m_GlobalFontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_GlobalFontAsset: {fileID: 11400000, guid: e921572d08516c64b8b360c126ab8d46, type: 2}
   m_OnFocusSelectAll: 1
   m_ResetOnDeActivation: 1
   m_KeepTextSelectionVisible: 0
@@ -1253,7 +1285,7 @@ GameObject:
   - component: {fileID: 1166820568529402642}
   - component: {fileID: 4662397220101839995}
   - component: {fileID: 6821715018175013014}
-  - component: {fileID: 2064016316642614940}
+  - component: {fileID: 893012415651940563}
   m_Layer: 5
   m_Name: EntryWordInput
   m_TagString: Untagged
@@ -1319,7 +1351,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &2064016316642614940
+--- !u!114 &893012415651940563
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1328,9 +1360,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 7788387802425147781}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2da0c512f12947e489f739169773d7ca, type: 3}
+  m_Script: {fileID: 11500000, guid: 30719fa38db54762ac43b2c0cfa5a00b, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TMP_InputField
+  m_EditorClassIdentifier: Assembly-CSharp::Tools.DragInputField
   m_Navigation:
     m_Mode: 0
     m_WrapAround: 0
@@ -1377,7 +1409,7 @@ MonoBehaviour:
   m_CharacterValidation: 0
   m_RegexValue: 
   m_GlobalPointSize: 14
-  m_CharacterLimit: 28
+  m_CharacterLimit: 0
   m_OnEndEdit:
     m_PersistentCalls:
       m_Calls: []
@@ -1410,7 +1442,7 @@ MonoBehaviour:
   m_CaretWidth: 1
   m_ReadOnly: 0
   m_RichText: 1
-  m_GlobalFontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_GlobalFontAsset: {fileID: 11400000, guid: e921572d08516c64b8b360c126ab8d46, type: 2}
   m_OnFocusSelectAll: 1
   m_ResetOnDeActivation: 1
   m_KeepTextSelectionVisible: 0

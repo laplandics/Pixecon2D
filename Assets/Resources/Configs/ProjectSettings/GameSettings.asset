@@ -12,3 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d87b09b9b21407f8848a8943171d196, type: 3}
   m_Name: GameSettings
   m_EditorClassIdentifier: Assembly-CSharp::Settings.GameSettings
+  cellsSettings:
+    cellCreationSpeed: 10

@@ -12,7 +12,8 @@ namespace Menu
         
         private Subject<Unit> _playSignal;
 
-        public void LoadElements(VocabularyCreator vocabCreator, Dictionary<string, Subject<Unit>> signals)
+        public void LoadElements(VocabularyCreator vocabCreator,
+            Dictionary<string, Subject<Unit>> signals, ScrollRect rootScrollRect)
         {
             _playSignal = signals[MenuUiInteractor.PLAY_BUTTON_SIGNAL_NAME];
             playButton.onClick.AddListener(() => _playSignal.OnNext(Unit.Default));

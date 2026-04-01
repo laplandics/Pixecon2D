@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using ObservableCollections;
 using R3;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Menu
 {
@@ -13,13 +14,16 @@ namespace Menu
         [Header("Prefabs")]
         public VocabularyTabButtonUI vocabularyTabButtonPrefab;
 
+        private ScrollRect _rootScrollRect;
         private int _buttonsIndex;
         private VocabularyCreator _vocabularyCreator;
         private VocabularyTabButtonUI _newVocabularyTabButton;
         private readonly List<VocabularyTabButtonUI> _vocabularyTabButtons = new();
         
-        public void LoadElements(VocabularyCreator vocabCreator, Dictionary<string, Subject<Unit>> signals)
+        public void LoadElements(VocabularyCreator vocabCreator,
+            Dictionary<string, Subject<Unit>> signals, ScrollRect parentScrollRect)
         {
+            _rootScrollRect = parentScrollRect;
             _vocabularyCreator = vocabCreator;
             _buttonsIndex = 0;
             _vocabularyCreator.GetVocabularies.ObserveAdd().Subscribe(e =>
@@ -69,7 +73,7 @@ namespace Menu
             newTabButton.tabName.gameObject.SetActive(true);
             newTabButton.tabName.text = $"{_buttonsIndex + 1}";
             newTabButton.VocabularyProxy = vocabulary;
-            newTabButton.Initialize(_vocabularyCreator);
+            newTabButton.Initialize(_vocabularyCreator, _rootScrollRect);
             newTabButton.tabButton.onClick.AddListener(() =>
                 OnExistingVocabularyTabButtonClicked(newTabButton));
                 

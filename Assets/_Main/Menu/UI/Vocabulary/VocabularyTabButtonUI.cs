@@ -4,6 +4,7 @@ using ObservableCollections;
 using R3;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace Menu
@@ -28,14 +29,16 @@ namespace Menu
         public Color iconUnselectedColor;
         public Color bgUnselectedColor;
         
+        private ScrollRect _rootScrollRect;
         private VocabularyCreator _vocabularyCreator;
         private RectTransform _container;
         private VocabularyTitleUI _vocabularyTitleUI;
         private VocabularyAddEntryUI _vocabularyAddEntryUI;
         private readonly List<VocabularyEntryUI> _vocabularyEntryUis = new();
 
-        public void Initialize(VocabularyCreator vocabularyCreator)
+        public void Initialize(VocabularyCreator vocabularyCreator, ScrollRect rootScrollRect)
         {
+            _rootScrollRect = rootScrollRect;
             _vocabularyCreator = vocabularyCreator;
             var vocabulary = _vocabularyCreator.GetVocabularies.FirstOrDefault(v => v.Id == VocabularyProxy.Id);
             if (vocabulary == null) {Debug.LogError("Vocabulary id not found"); return; }
@@ -68,6 +71,7 @@ namespace Menu
         {
             _vocabularyTitleUI = Instantiate(vocabularyTitlePrefab, _container, false);
             _vocabularyTitleUI.titleInput.text = VocabularyProxy.Title.Value;
+            _vocabularyTitleUI.titleInput.characterValidation = TMP_InputField.CharacterValidation.Name;
             _vocabularyTitleUI.titleInput.onValueChanged.AddListener(text => VocabularyProxy.Title.Value = text);
         }
 
@@ -80,9 +84,23 @@ namespace Menu
         private void InstantiateEntry(Proxy.VocabularyEntryDataProxy entryDataProxy)
         {
             var entryUi = Instantiate(vocabularyEntryPrefab, _container, false);
+
+            entryUi.translationInput.ScrollRect = _rootScrollRect;
+            entryUi.wordInput.ScrollRect = _rootScrollRect;
+            
             entryUi.translationInput.text = entryDataProxy.Translation.Value;
             entryUi.wordInput.text = entryDataProxy.Word.Value;
-
+    
+            entryUi.wordInput.onValidateInput += (_, index, addedChar) =>
+            {
+                const string allowedChars = "QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm";
+                if (index >= 16) return '\0';
+                return !allowedChars.Contains(addedChar) ? '\0' : addedChar;
+            };
+            
+            entryUi.wordInput.onEndEdit.AddListener(text =>
+            { if (!string.IsNullOrEmpty(text)) return; entryUi.wordInput.text = "Word"; });
+            
             entryUi.translationInput.onValueChanged.AddListener(text => entryDataProxy.Translation.Value = text);
             entryUi.wordInput.onValueChanged.AddListener(text => entryDataProxy.Word.Value = text.ToLower());
             

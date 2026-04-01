@@ -17,13 +17,28 @@ MonoBehaviour:
   initialVocabulariesDataSettings:
     initialVocabulariesData:
     - key: Vocab
-      title: "\u041F\u0435\u0440\u0432\u044B\u0439 \u0441\u043B\u043E\u0432\u0430\u0440\u044C"
+      title: "\u0421\u0442\u0430\u043D\u0434\u0430\u0440\u0442\u043D\u044B\u0439
+        \u0441\u043B\u043E\u0432\u0430\u0440\u044C"
       entries:
-      - word: Beautiful
-        translation: "\u041A\u0440\u0430\u0441\u0438\u0432\u044B\u0439"
-      - word: Straightforward
-        translation: "\u041F\u0440\u044F\u043C\u043E\u0439"
-      - word: Regular
-        translation: "\u041E\u0431\u044B\u0447\u043D\u044B\u0439"
-      - word: Kiss
-        translation: "\u041F\u043E\u0446\u0435\u043B\u0443\u0439"
+      - word: day
+        translation: "\u0414\u0435\u043D\u044C"
+      - word: money
+        translation: "\u0414\u0435\u043D\u044C\u0433\u0438"
+      - word: number
+        translation: "\u0427\u0438\u0441\u043B\u043E"
+      - word: oil
+        translation: "\u041C\u0430\u0441\u043B\u043E"
+      - word: part
+        translation: "\u0427\u0430\u0441\u0442\u044C"
+      - word: people
+        translation: "\u041B\u044E\u0434\u0438"
+      - word: time
+        translation: "\u0412\u0440\u0435\u043C\u044F"
+      - word: water
+        translation: "\u0412\u043E\u0434\u0430"
+      - word: way
+        translation: "\u041F\u0443\u0442\u044C"
+      - word: work
+        translation: "\u0420\u0430\u0431\u043E\u0442\u0430"
+      - word: year
+        translation: "\u0413\u043E\u0434"

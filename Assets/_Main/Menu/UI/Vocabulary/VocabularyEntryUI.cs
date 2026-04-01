@@ -1,11 +1,11 @@
-using TMPro;
+using Tools;
 using UnityEngine;
 
 namespace Menu
 {
     public class VocabularyEntryUI : MonoBehaviour
     {
-        public TMP_InputField translationInput;
-        public TMP_InputField wordInput;
+        public DragInputField translationInput;
+        public DragInputField wordInput;
     }
 }

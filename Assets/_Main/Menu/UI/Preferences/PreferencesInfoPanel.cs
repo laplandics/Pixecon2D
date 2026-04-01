@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using R3;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Menu
 {
@@ -8,7 +9,8 @@ namespace Menu
     {
         private Proxy.ProjectDataProxy _pdp;
 
-        public void LoadElements(VocabularyCreator vocabCreator, Dictionary<string, Subject<Unit>> signals)
+        public void LoadElements(VocabularyCreator vocabCreator,
+            Dictionary<string, Subject<Unit>> signals, ScrollRect rootScrollRect)
         {
             
         }

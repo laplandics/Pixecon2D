@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using ObservableCollections;
@@ -9,11 +9,14 @@ namespace GameView
 {
     public class GameWorldRootBinder : MonoBehaviour, IRootWorld
     {
+        private GameWorldRootViewModel _vm;
         private readonly Dictionary<int, CellBinder> _createdCellsMap = new();
         private readonly CompositeDisposable _disposables = new();
         
         public void Bind(GameWorldRootViewModel vm)
         {
+            _vm = vm;
+            
             foreach (var cellVm in vm.AllCells) { CreateCell(cellVm); }
             
             _disposables.Add(vm.AllCells.ObserveAdd().Subscribe(addEvent => 
@@ -25,23 +28,43 @@ namespace GameView
         
         private void CreateCell(CellViewModel cellVm)
         {
-            var cellPrefab = Resources.Load<CellBinder>(Constant.Names.World.CELL_PREFAB);
-            var createdCell = Instantiate(cellPrefab);
-            createdCell.Bind(cellVm);
-            createdCell.ViewModel.CellProxy.Letter.Subscribe(letter =>
-            { if (!char.IsLetter(letter)) return; UpdateCellSprite(createdCell); });
-            _createdCellsMap[cellVm.CellEntityId] = createdCell;
+            const string path = Constant.Names.World.CELL_PREFAB;
+            
+            var pos = cellVm.Position.CurrentValue;
+            var cellObject = _vm.Spawner.Spawn(path, pos);
+            var cell = cellObject.GetComponent<CellBinder>();
+            cell.Bind(cellVm);
+            cell.ViewModel.CellProxy.Letter
+                .Where(char.IsLetter)
+                .Subscribe(_ => UpdateCellSprite(cell));
+            _createdCellsMap.Add(cellVm.CellEntityId, cell);
+            
+            StartCoroutine(CellCreation(cell));
+        }
+
+        private IEnumerator CellCreation(CellBinder cell)
+        {
+            cell.cldr.enabled = false;
+            var cellTr = cell.transform;
+            cellTr.transform.localScale = Vector3.zero;
+            while (cellTr.localScale.x < 1f)
+            {
+                cellTr.localScale += Vector3.one * (Time.deltaTime * cell.ViewModel.Settings.cellCreationSpeed);
+                yield return null;
+                if (!(cellTr.localScale.x >= 1f)) continue;
+                cellTr.localScale = Vector3.one; break;
+            }
+            cell.cldr.enabled = true;
         }
 
         private void UpdateCellSprite(CellBinder cellBinder)
         {
             var letterSprite = Resources.LoadAll<Sprite>(Constant.Names.World.LETTERS_ATLAS)
                 .FirstOrDefault(sprite => sprite.name == $"{cellBinder.ViewModel.CellProxy.Letter}");
-            if (letterSprite == null) return;
             
-            var cellMesh = cellBinder.GetComponentInChildren<MeshFilter>();
+            var cellMesh = cellBinder.mf;
             
-            var uMin = letterSprite.rect.x / letterSprite.texture.width;
+            var uMin = letterSprite!.rect.x / letterSprite.texture.width;
             var vMin = letterSprite.rect.y / letterSprite.texture.height;
             var uMax = (letterSprite.rect.x + letterSprite.rect.width) / letterSprite.texture.width;
             var vMax = (letterSprite.rect.y + letterSprite.rect.height) / letterSprite.texture.height;
@@ -59,7 +82,7 @@ namespace GameView
         {
             cellVm.Letter.Dispose();
             if (_createdCellsMap.TryGetValue(cellVm.CellEntityId, out var cellBinder))
-            { Destroy(cellBinder.gameObject); }
+            { cellBinder.gameObject.SetActive(false); }
             _createdCellsMap.Remove(cellVm.CellEntityId);
         }
         
